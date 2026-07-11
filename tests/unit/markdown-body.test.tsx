@@ -12,7 +12,8 @@ describe("MarkdownBody", () => {
       "> 캐시 정책은 팀의 약속입니다.",
       "#### 즉시 갱신이 필요한 경우",
       "![데이터 성격에 따라 캐시 정책을 분리하는 흐름](/images/posts/cache-strategy-flow.png \"데이터 성격에 따라 캐시 정책을 분리하는 흐름\")",
-      "![작은 캐시 정책 메모](/images/posts/cache-policy-note.png \"작은 캐시 정책 메모 | width=240\")",
+      "![작은 캐시 정책 메모](/images/posts/cache-policy-note.png \"작은 캐시 정책 메모\")",
+      "![피곤..](https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg \"피곤..\")",
       "```ts\nconst cachePolicy = {\n  user: \"no-store\",\n};\n```",
       "- 공개 목록은 재검증 주기를 둡니다.",
       "- 개인화 데이터는 요청마다 새로 가져옵니다.",
@@ -36,10 +37,16 @@ describe("MarkdownBody", () => {
     expect(html).toContain("즉시 갱신이 필요한 경우</h4>");
     expect(html).toContain("데이터 성격에 따라 캐시 정책을 분리하는 흐름");
     expect(html).toContain("작은 캐시 정책 메모");
+    expect(html).toContain("피곤..");
     expect(html).toContain("<img");
     expect(html).toContain("cache-strategy-flow.png");
     expect(html).toContain("object-contain");
-    expect(html).toContain('data-image-width="240"');
+    expect(html).toContain('height="1164"');
+    expect(html).toContain('width="1029"');
+    expect(html).toContain('data-image-height="1164"');
+    expect(html).toContain('data-image-width="1029"');
+    expect(html).toContain('max-width:1029px;width:100%');
+    expect(html).toContain('height:auto;width:100%');
     expect(html).toContain("text-center text-xs");
     expect(html).toContain("<pre");
     expect(html).toContain("[overflow-wrap:normal]");

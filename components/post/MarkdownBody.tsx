@@ -36,7 +36,21 @@ const codeTokenPattern = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`
 
 type ImageMetadata = {
   caption?: string;
-  width?: number;
+};
+
+type ImageDimensions = {
+  height: number;
+  width: number;
+};
+
+type ImageContentProps = {
+  alt: string;
+  dimensions?: ImageDimensions;
+  source: string;
+};
+
+const markdownImageDimensions: Readonly<Record<string, ImageDimensions>> = {
+  "https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg": { height: 1164, width: 1029 },
 };
 
 function getHeadingId(text: string) {
@@ -131,38 +145,53 @@ function renderHighlightedCode(code: string, language: string) {
   ]);
 }
 
-function parseImageWidth(part: string | undefined) {
-  if (!part) {
-    return undefined;
-  }
-
-  const match = /^width=(\d{2,4})$/u.exec(part.trim());
-
-  if (!match) {
-    return undefined;
-  }
-
-  return Number(match[1]);
-}
-
 function parseImageMetadata(rawTitle: string | undefined): ImageMetadata {
   if (!rawTitle) {
     return {};
   }
 
   const parts = rawTitle.split(/\s*\|\s*/u).filter(Boolean);
-  const widthPart = parts.find((part) => part.trim().startsWith("width="));
-  const caption = parts.filter((part) => !part.trim().startsWith("width=")).join(" | ") || undefined;
+  const caption = parts.join(" | ") || undefined;
 
-  return { caption, width: parseImageWidth(widthPart) };
+  return { caption };
 }
 
-function getImageContentStyle(width: number | undefined): CSSProperties | undefined {
-  if (!width) {
+function getMarkdownImageDimensions(source: string) {
+  return markdownImageDimensions[source];
+}
+
+function getImageContentStyle(dimensions: ImageDimensions | undefined): CSSProperties | undefined {
+  if (!dimensions) {
     return undefined;
   }
 
-  return { maxWidth: width };
+  return { maxWidth: dimensions.width, width: "100%" };
+}
+
+const responsiveImageStyle = { height: "auto", width: "100%" } satisfies CSSProperties;
+
+function renderImageContent({ alt, dimensions, source }: ImageContentProps) {
+  if (dimensions) {
+    return (
+      <div className="overflow-hidden rounded-[14px]" style={getImageContentStyle(dimensions)}>
+        <Image
+          src={source}
+          alt={alt}
+          width={dimensions.width}
+          height={dimensions.height}
+          sizes={`(max-width: ${dimensions.width}px) 100vw, ${dimensions.width}px`}
+          className="h-auto w-full"
+          style={responsiveImageStyle}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative flex w-full min-h-[210px] items-center justify-center overflow-hidden rounded-[14px] md:min-h-[280px] xl:min-h-[300px]">
+      <Image src={source} alt={alt} fill sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)" className="object-contain" />
+    </div>
+  );
 }
 
 function renderCodeBlock(block: string) {
@@ -193,14 +222,13 @@ function renderImageBlock(block: string) {
   }
 
   const [, alt, source, rawTitle] = match;
-  const { caption, width } = parseImageMetadata(rawTitle);
+  const { caption } = parseImageMetadata(rawTitle);
+  const dimensions = getMarkdownImageDimensions(source);
 
   return (
-    <figure key={block} className="flex min-w-0 flex-col items-center gap-2" data-image-width={width}>
-      <div className="relative flex w-full min-h-[210px] items-center justify-center overflow-hidden rounded-[14px] md:min-h-[280px] xl:min-h-[300px]" style={getImageContentStyle(width)}>
-        <Image src={source} alt={alt} fill sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)" className="object-contain" />
-      </div>
-      <figcaption className="w-full text-center text-xs leading-[1.35] text-text-muted" style={getImageContentStyle(width)}>
+    <figure key={block} className="flex min-w-0 flex-col items-center gap-2" data-image-height={dimensions?.height} data-image-width={dimensions?.width}>
+      {renderImageContent({ alt, dimensions, source })}
+      <figcaption className="w-full text-center text-xs leading-[1.35] text-text-muted" style={getImageContentStyle(dimensions)}>
         {caption ?? source}
       </figcaption>
     </figure>
