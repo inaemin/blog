@@ -11,7 +11,11 @@ export async function GET(request: Request) {
 
   if (!postSlug) {
     return NextResponse.json(
-      { ok: false, code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
+      {
+        ok: false,
+        code: "INVALID_INPUT",
+        message: errorMessages.INVALID_INPUT,
+      },
       { status: 400 },
     );
   }
@@ -23,23 +27,44 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
 
-  if (!body || typeof body.comment !== "string" || typeof body.nickname !== "string" || typeof body.postSlug !== "string") {
+  if (
+    !body ||
+    typeof body.comment !== "string" ||
+    typeof body.nickname !== "string" ||
+    typeof body.postSlug !== "string"
+  ) {
     return NextResponse.json(
-      { ok: false, code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
+      {
+        ok: false,
+        code: "INVALID_INPUT",
+        message: errorMessages.INVALID_INPUT,
+      },
       { status: 400 },
     );
   }
 
-  if (body.comment.trim().length === 0 || body.nickname.trim().length === 0 || body.postSlug.trim().length === 0) {
+  if (
+    body.comment.trim().length === 0 ||
+    body.nickname.trim().length === 0 ||
+    body.postSlug.trim().length === 0
+  ) {
     return NextResponse.json(
-      { ok: false, code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
+      {
+        ok: false,
+        code: "INVALID_INPUT",
+        message: errorMessages.INVALID_INPUT,
+      },
       { status: 400 },
     );
   }
 
   if (typeof body.honeypot === "string" && body.honeypot.trim().length > 0) {
     return NextResponse.json(
-      { ok: false, code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
+      {
+        ok: false,
+        code: "INVALID_INPUT",
+        message: errorMessages.INVALID_INPUT,
+      },
       { status: 400 },
     );
   }
@@ -50,5 +75,8 @@ export async function POST(request: Request) {
     postSlug: body.postSlug.trim(),
   });
 
-  return NextResponse.json({ ok: true, status: comment.status }, { status: 201 });
+  return NextResponse.json(
+    { ok: true, status: comment.status },
+    { status: 201 },
+  );
 }

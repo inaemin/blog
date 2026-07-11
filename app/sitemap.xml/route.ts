@@ -1,4 +1,8 @@
-import { getAllTags, getPublishedCraftItems, getPublishedPosts } from "@/lib/content";
+import {
+  getAllTags,
+  getPublishedCraftItems,
+  getPublishedPosts,
+} from "@/lib/content";
 import { siteConfig } from "@/lib/site";
 
 export async function GET() {
