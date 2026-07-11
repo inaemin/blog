@@ -41,10 +41,24 @@ type FrontmatterEntry = readonly [string, FrontmatterValue];
 
 async function readMdxFiles(directory: string) {
   const absoluteDirectory = path.join(contentRoot, directory);
-  const entries = await readdir(absoluteDirectory, { withFileTypes: true });
+  const entries = await readDirectoryEntries(absoluteDirectory);
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
     .map((entry) => path.join(absoluteDirectory, entry.name));
+}
+
+async function readDirectoryEntries(absoluteDirectory: string) {
+  return readdir(absoluteDirectory, { withFileTypes: true }).catch((error: unknown) => {
+    if (isMissingDirectoryError(error)) {
+      return [];
+    }
+
+    throw error;
+  });
+}
+
+function isMissingDirectoryError(error: unknown) {
+  return error instanceof Error && "code" in error && error.code === "ENOENT";
 }
 
 function parseFrontmatter(raw: string) {

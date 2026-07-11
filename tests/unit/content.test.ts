@@ -1,3 +1,5 @@
+import { mkdir, rename, rm } from "node:fs/promises";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { formatDate, getAllTags, getPostBySlug, getPublishedCraftItems, getPublishedPosts } from "@/lib/content";
 
@@ -59,8 +61,35 @@ describe("content queries", () => {
     expect(craftItems).toEqual([]);
   });
 
+  it("returns no craft items when the craft content directory is missing", async () => {
+    const craftDirectory = path.join(process.cwd(), "content", "craft");
+    const backupDirectory = path.join(process.cwd(), "content", ".craft-test-backup");
+
+    await rm(backupDirectory, { force: true, recursive: true });
+    await rename(craftDirectory, backupDirectory).catch((error: unknown) => {
+      if (!isMissingDirectoryError(error)) {
+        throw error;
+      }
+    });
+
+    try {
+      await expect(getPublishedCraftItems()).resolves.toEqual([]);
+    } finally {
+      await mkdir(path.dirname(craftDirectory), { recursive: true });
+      await rename(backupDirectory, craftDirectory).catch((error: unknown) => {
+        if (!isMissingDirectoryError(error)) {
+          throw error;
+        }
+      });
+    }
+  });
+
   it("formats known and missing dates", () => {
     expect(formatDate("2026-07-10")).toBe("2026.07.10");
     expect(formatDate()).toBe("날짜 미정");
   });
 });
+
+function isMissingDirectoryError(error: unknown) {
+  return error instanceof Error && "code" in error && error.code === "ENOENT";
+}
