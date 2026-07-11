@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Annie Way
+
+프론트엔드 개발과 제품 경험을 기록하는 Next.js 기반 기술 블로그입니다.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Supabase 댓글 API
+- Vitest, Playwright
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 엽니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+로컬 환경 변수는 `.env.example`을 참고해 `.env.local`에 설정합니다.
 
-## Learn More
+```bash
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_your_server_only_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+선택 기능:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: 댓글 스팸 방지
+- `AI_API_KEY`: 댓글 AI 모더레이션
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+```bash
+pnpm dev        # 개발 서버 실행
+pnpm lint       # ESLint 검사
+pnpm test:unit  # Vitest 단위 테스트
+pnpm test:e2e   # fixture 모드로 빌드 후 Playwright E2E 실행
+pnpm check      # lint, unit test, production build 검증
+pnpm build      # production build
+pnpm start      # production server 실행
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/`: App Router 페이지와 API 라우트
+- `components/`: 레이아웃, 게시글, 댓글, 홈 섹션 컴포넌트
+- `content/posts/`: MDX 게시글 콘텐츠
+- `lib/`: 콘텐츠 로더, 댓글, 인기 글, 사이트 설정 유틸
+- `tests/`: unit/e2e 테스트
+- `docs/`: API, 아키텍처, 콘텐츠, 디자인 문서
+
+## Content Visibility
+
+게시글 frontmatter의 `status` 값으로 노출 범위를 제어합니다.
+
+- `published`: 공개 목록, 태그, RSS, sitemap, 인기 글 대상
+- `private`: public 화면/API에서 제외, 개발 preview에서만 확인
+- `draft`: public 화면/API에서 제외, 개발 preview에서만 확인
+
+## Deployment
+
+Vercel 배포를 기준으로 합니다. 배포 환경에는 최소한 다음 값을 설정합니다.
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-blog.vercel.app
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_your_server_only_key
+```
