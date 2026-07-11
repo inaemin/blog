@@ -345,7 +345,7 @@ export function InlineArticleToc({ headings }: ArticleTocProps) {
   return (
     <details
       open={isTocOpen}
-      className="fixed right-[33px] top-[98px] z-10 hidden w-[234px] flex-col gap-2 md:flex xl:hidden"
+      className="fixed right-8.25 top-24.5 z-10 hidden w-58.5 flex-col gap-2 md:flex xl:hidden"
       onToggle={(event) => setIsTocOpen(event.currentTarget.open)}
     >
       <summary className="flex h-11 cursor-pointer list-none items-center justify-between rounded-xl border border-border bg-surface px-3 text-[13px] font-bold leading-[1.35] text-foreground shadow-[0_2px_4px_#00000014]">
@@ -411,7 +411,7 @@ export function DesktopArticleToc({ headings }: ArticleTocProps) {
 
   return (
     <aside className="hidden xl:block">
-      <div className="sticky top-24 flex w-[295px] flex-col gap-3 py-0">
+      <div className="sticky top-24 flex w-73.75 flex-col gap-3 py-0">
         <p className="text-base font-bold leading-[1.45] text-foreground">목차</p>
         <div className="flex gap-3">
           <div aria-hidden="true" className="relative w-1.5 shrink-0" style={{ height: rowMetrics.railHeight }}>

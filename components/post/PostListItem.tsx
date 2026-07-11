@@ -50,14 +50,14 @@ function renderStatusBadge(status: ContentStatus) {
 function PostThumbnail({ post, href, fallbackLabel }: { post: Post; href: string; fallbackLabel: string }) {
   if (!post.thumbnail) {
     return (
-      <Link href={href} className="hidden h-20 w-[116px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-[88px] xl:w-32">
+      <Link href={href} className="hidden h-20 w-29 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-22 xl:w-32">
         <span className="px-3.5 text-center xl:px-4">{fallbackLabel}</span>
       </Link>
     );
   }
 
   return (
-    <Link href={href} className="hidden h-20 w-[116px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-[88px] xl:w-32">
+    <Link href={href} className="hidden h-20 w-29 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-22 xl:w-32">
       <Image src={post.thumbnail} alt={`${post.title} 썸네일`} width={128} height={88} className="size-full object-cover" />
     </Link>
   );
@@ -69,7 +69,7 @@ export function PostListItem({ post }: { post: Post }) {
 
   return (
     <article className={getArticleClassName(post.status)} data-content-status={post.status}>
-      <div className="flex gap-4 md:items-center xl:gap-[18px]">
+      <div className="flex gap-4 md:items-center xl:gap-4.5">
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <PostTag>{primaryTag}</PostTag>
@@ -78,7 +78,7 @@ export function PostListItem({ post }: { post: Post }) {
               {formatDate(post.publishedAt)} · {post.readingTime}
             </span>
           </div>
-          <h2 className="text-lg font-bold leading-[1.28] text-foreground md:text-[19px] md:leading-[1.25] xl:text-xl">
+          <h2 className="text-lg font-bold leading-[1.28] text-foreground md:text-[19px] md:leading-tight xl:text-xl">
             <Link href={postHref} className="hover:text-brand">
               {post.title}
             </Link>
