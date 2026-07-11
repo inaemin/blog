@@ -36,6 +36,9 @@ describe("MarkdownBody", () => {
     expect(html).toContain("즉시 갱신이 필요한 경우</h4>");
     expect(html).toContain("데이터 성격에 따라 캐시 정책을 분리하는 흐름");
     expect(html).toContain("작은 캐시 정책 메모");
+    expect(html).toContain("<img");
+    expect(html).toContain("cache-strategy-flow.png");
+    expect(html).toContain("object-contain");
     expect(html).toContain('data-image-width="240"');
     expect(html).toContain("text-center text-xs");
     expect(html).toContain("<pre");

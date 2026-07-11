@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import Image from "next/image";
 
 export type MarkdownHeading = {
   id: string;
@@ -196,8 +197,8 @@ function renderImageBlock(block: string) {
 
   return (
     <figure key={block} className="flex min-w-0 flex-col items-center gap-2" data-image-width={width}>
-      <div className="flex w-full min-h-[210px] items-center justify-center rounded-[14px] border border-[#D6E7FF] bg-tag-bg px-5 text-center md:min-h-[280px] xl:min-h-[300px]" style={getImageContentStyle(width)}>
-        <span className="text-sm font-medium text-brand">{alt}</span>
+      <div className="relative flex w-full min-h-[210px] items-center justify-center overflow-hidden rounded-[14px] md:min-h-[280px] xl:min-h-[300px]" style={getImageContentStyle(width)}>
+        <Image src={source} alt={alt} fill sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)" className="object-contain" />
       </div>
       <figcaption className="w-full text-center text-xs leading-[1.35] text-text-muted" style={getImageContentStyle(width)}>
         {caption ?? source}
