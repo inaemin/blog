@@ -311,7 +311,7 @@ function TocItems({
   variant: TocVariant;
 }) {
   if (headings.length === 0) {
-    return <p className="text-sm leading-6 text-text-muted">목차로 표시할 heading이 없습니다.</p>;
+    return <p className="text-sm leading-6 text-text-muted">아직 표시할 목차가 없어요.</p>;
   }
 
   return (
