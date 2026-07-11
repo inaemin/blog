@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Annie Way",
-    template: "%s · Annie Way",
+    default: siteConfig.name,
+    template: `%s · ${siteConfig.name}`,
   },
-  description: "Next.js, React, performance, and craft notes.",
+  description: siteConfig.description,
 };
 
 export default function RootLayout({
