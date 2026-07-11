@@ -2,7 +2,14 @@
 
 import { type FormEvent, useState } from "react";
 
-const randomNicknames = ["재미있는나비", "느긋한고래", "명랑한다람쥐", "푸른여우", "차분한수달", "반짝이는별"];
+const randomNicknames = [
+  "재미있는나비",
+  "느긋한고래",
+  "명랑한다람쥐",
+  "푸른여우",
+  "차분한수달",
+  "반짝이는별",
+];
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
 type SubmitDisabledInput = {
@@ -28,7 +35,9 @@ type CommentComposerProps = {
 };
 
 function getRandomNickname(currentNickname: string) {
-  const candidates = randomNicknames.filter((nickname) => nickname !== currentNickname);
+  const candidates = randomNicknames.filter(
+    (nickname) => nickname !== currentNickname,
+  );
   const index = Math.floor(Math.random() * candidates.length);
 
   return candidates[index] ?? randomNicknames[0];
@@ -42,7 +51,10 @@ function getSubmitMessage(submitState: SubmitState) {
   return "";
 }
 
-function createOptimisticInput(nickname: string, body: string): OptimisticCommentInput {
+function createOptimisticInput(
+  nickname: string,
+  body: string,
+): OptimisticCommentInput {
   return {
     body,
     createdAt: new Date().toISOString(),
@@ -55,7 +67,11 @@ function getSubmitMessageClassName() {
   return "text-xs leading-4 text-text-muted";
 }
 
-function isSubmitDisabled({ comment, nickname, submitState }: SubmitDisabledInput) {
+function isSubmitDisabled({
+  comment,
+  nickname,
+  submitState,
+}: SubmitDisabledInput) {
   if (submitState === "submitting") {
     return true;
   }
@@ -85,11 +101,15 @@ function getSubmitButtonLabel(submitState: SubmitState) {
   return "댓글 남기기";
 }
 
-export function CommentComposer({ onOptimisticComment, postSlug }: CommentComposerProps) {
+export function CommentComposer({
+  onOptimisticComment,
+  postSlug,
+}: CommentComposerProps) {
   const [comment, setComment] = useState("");
   const [nickname, setNickname] = useState("재미있는나비");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
-  const buttonSizeClassName = "h-[38px] rounded-lg px-3 text-[13px] font-medium leading-[1.35]";
+  const buttonSizeClassName =
+    "h-[38px] rounded-lg px-3 text-[13px] font-medium leading-[1.35]";
   const submitMessage = getSubmitMessage(submitState);
   const submitDisabled = isSubmitDisabled({ comment, nickname, submitState });
 
@@ -111,18 +131,33 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
 
     setSubmitState("submitting");
     onOptimisticComment(createOptimisticInput(trimmedNickname, trimmedComment));
-    await postComment({ comment: trimmedComment, honeypot: honeypot?.toString() ?? "", nickname: trimmedNickname, postSlug });
+    await postComment({
+      comment: trimmedComment,
+      honeypot: honeypot?.toString() ?? "",
+      nickname: trimmedNickname,
+      postSlug,
+    });
 
     setComment("");
     setSubmitState("success");
   };
 
   return (
-    <form className="flex flex-col gap-2.5 rounded-lg border border-border bg-transparent p-3 md:p-4 xl:p-4.5" onSubmit={submitComment}>
+    <form
+      className="flex flex-col gap-2.5 rounded-lg border border-border bg-transparent p-3 md:p-4 xl:p-4.5"
+      onSubmit={submitComment}
+    >
       <input type="hidden" name="postSlug" value={postSlug} />
-      <input type="text" name="honeypot" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+      <input
+        type="text"
+        name="honeypot"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden="true"
+      />
       <div className="flex h-9.5 items-center gap-2.5">
-        <span className="flex size-8.5 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-medium leading-[1.35] text-white">
+        <span className="flex size-8.5 shrink-0 items-center justify-center rounded-full bg-brand text-xs leading-[1.35] font-medium text-white">
           {nickname.slice(0, 1)}
         </span>
         <input
@@ -130,9 +165,13 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
           name="nickname"
           value={nickname}
           onChange={(event) => setNickname(event.target.value)}
-          className="h-9.5 min-w-0 flex-1 rounded-lg border border-border bg-transparent px-2 text-[13px] font-medium leading-[1.35] text-foreground outline-none focus:border-brand focus:ring-2 focus:ring-tag-border"
+          className="h-9.5 min-w-0 flex-1 rounded-lg border border-border bg-transparent px-2 text-[13px] leading-[1.35] font-medium text-foreground outline-none focus:border-brand focus:ring-2 focus:ring-tag-border"
         />
-        <button type="button" className={`${buttonSizeClassName} border border-border bg-card text-text-secondary`} onClick={randomizeNickname}>
+        <button
+          type="button"
+          className={`${buttonSizeClassName} border border-border bg-card text-text-secondary`}
+          onClick={randomizeNickname}
+        >
           랜덤 변경
         </button>
       </div>
@@ -150,7 +189,11 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
         <p className={getSubmitMessageClassName()} aria-live="polite">
           {submitMessage}
         </p>
-        <button type="submit" className={`${buttonSizeClassName} bg-brand text-white disabled:cursor-not-allowed disabled:bg-text-muted`} disabled={submitDisabled}>
+        <button
+          type="submit"
+          className={`${buttonSizeClassName} bg-brand text-white disabled:cursor-not-allowed disabled:bg-text-muted`}
+          disabled={submitDisabled}
+        >
           {getSubmitButtonLabel(submitState)}
         </button>
       </div>
