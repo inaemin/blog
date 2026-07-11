@@ -45,7 +45,7 @@ test.describe("home responsive layout", () => {
     await expect(page.locator("div.absolute").getByRole("link", { name: "전체 글" })).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(page.locator("div.absolute").getByRole("link", { name: "전체 글" })).toHaveCSS("color", "rgb(78, 89, 104)");
     await expect(page.locator('[aria-labelledby="tags-title"]')).toBeHidden();
-    await expect(page.locator('[aria-labelledby="latest-posts-title"] article').first().locator("div.hidden")).toBeHidden();
+    await expect(page.locator('[aria-labelledby="latest-posts-title"] article').first().locator("a.hidden")).toBeHidden();
     await expect(page.locator('[aria-labelledby="latest-posts-title"] [data-post-tag="true"]').first()).toHaveCSS("font-size", "12px");
     await expect(page.locator('[aria-labelledby="latest-comments-title"]').getByRole("link", { name: "Next.js App Router 캐시 전략 정리" }).first()).toBeVisible();
     await expect(page.locator('[aria-labelledby="latest-comments-title"] article').first()).toContainText(/\d+(초|분|시|일|달|년) 전/u);
@@ -56,7 +56,7 @@ test.describe("home responsive layout", () => {
     await page.setViewportSize({ width: 834, height: 1194 });
     await page.goto("/");
 
-    const thumbnail = page.locator('[aria-labelledby="latest-posts-title"] article div.hidden').first();
+    const thumbnail = page.locator('[aria-labelledby="latest-posts-title"] article a.hidden').first();
     const latestBox = await page.locator('[aria-labelledby="latest-posts-title"]').boundingBox();
     const asideBox = await page.locator("aside").boundingBox();
 
@@ -80,7 +80,7 @@ test.describe("home responsive layout", () => {
     await expect(page.locator("aside")).toHaveCSS("width", "295px");
     await expect(page.locator('[aria-labelledby="tags-title"]')).toBeVisible();
     await expect(page.locator("aside > section").first()).toHaveAttribute("aria-labelledby", "tags-title");
-    await expect(page.locator('[aria-labelledby="latest-posts-title"] article div.hidden').first()).toHaveCSS("width", "128px");
+    await expect(page.locator('[aria-labelledby="latest-posts-title"] article a.hidden').first()).toHaveCSS("width", "128px");
     await expect.poll(() => visibleCommentCount(page)).toBe(3);
   });
 

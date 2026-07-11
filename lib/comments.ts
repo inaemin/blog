@@ -83,6 +83,10 @@ function getSupabaseConfig() {
 }
 
 function isSupabaseConfigured() {
+  if (process.env.COMMENTS_FIXTURE_MODE === "true") {
+    return false;
+  }
+
   const { secretKey, url } = getSupabaseConfig();
   return url.startsWith("https://") && secretKey.startsWith("sb_secret_") && secretKey !== "sb_secret_your_server_only_key";
 }
