@@ -26,11 +26,18 @@ describe("popular posts API", () => {
     vi.stubEnv("VERCEL_ACCESS_TOKEN", "vercel-token");
     vi.stubEnv("VERCEL_PROJECT_ID", "prj_blog");
     vi.stubEnv("VERCEL_TEAM_ID", "team_blog");
-    vi.stubGlobal("fetch", vi.fn(async () => Response.json({
-      data: [{ requestPath: "/posts/first-post", pageviews: 42, visitors: 12 }],
-      query: {},
-      version: 1,
-    })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        Response.json({
+          data: [
+            { requestPath: "/posts/first-post", pageviews: 42, visitors: 12 },
+          ],
+          query: {},
+          version: 1,
+        }),
+      ),
+    );
 
     const response = await GET();
     const payload = await response.json();
@@ -40,8 +47,12 @@ describe("popular posts API", () => {
       expect.objectContaining({ rank: 1, score: 42, slug: "first-post" }),
     ]);
     expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining("https://api.vercel.com/v1/query/web-analytics/visits/aggregate?"),
-      expect.objectContaining({ headers: { authorization: "Bearer vercel-token" } }),
+      expect.stringContaining(
+        "https://api.vercel.com/v1/query/web-analytics/visits/aggregate?",
+      ),
+      expect.objectContaining({
+        headers: { authorization: "Bearer vercel-token" },
+      }),
     );
   });
 });

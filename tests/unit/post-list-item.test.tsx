@@ -26,7 +26,9 @@ function createPostWithThumbnail(): Post {
 
 describe("PostListItem", () => {
   it("keeps published items visually neutral", () => {
-    const html = renderToStaticMarkup(<PostListItem post={createPost("published")} />);
+    const html = renderToStaticMarkup(
+      <PostListItem post={createPost("published")} />,
+    );
 
     expect(html).toContain('data-content-status="published"');
     expect(html).toContain('href="/tags/Next.js"');
@@ -38,8 +40,12 @@ describe("PostListItem", () => {
   });
 
   it("marks draft and private items with distinct review states", () => {
-    const draftHtml = renderToStaticMarkup(<PostListItem post={createPost("draft")} />);
-    const privateHtml = renderToStaticMarkup(<PostListItem post={createPost("private")} />);
+    const draftHtml = renderToStaticMarkup(
+      <PostListItem post={createPost("draft")} />,
+    );
+    const privateHtml = renderToStaticMarkup(
+      <PostListItem post={createPost("private")} />,
+    );
 
     expect(draftHtml).toContain('data-content-status="draft"');
     expect(draftHtml).toContain("Draft");
@@ -53,16 +59,20 @@ describe("PostListItem", () => {
   });
 
   it("renders a thumbnail image when thumbnail metadata exists", () => {
-    const html = renderToStaticMarkup(<PostListItem post={createPostWithThumbnail()} />);
+    const html = renderToStaticMarkup(
+      <PostListItem post={createPostWithThumbnail()} />,
+    );
 
     expect(html).toContain("Ft-tVAqaUAAoXg4.jpg");
     expect(html).toContain('alt="첫 글 썸네일"');
     expect(html).toContain('loading="lazy"');
-    expect(html).toContain('object-cover');
+    expect(html).toContain("object-cover");
   });
 
   it("falls back to the primary tag when thumbnail metadata is missing", () => {
-    const html = renderToStaticMarkup(<PostListItem post={createPost("published")} />);
+    const html = renderToStaticMarkup(
+      <PostListItem post={createPost("published")} />,
+    );
 
     expect(html).not.toContain("<img");
     expect(html).toContain(">Next.js</span>");

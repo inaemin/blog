@@ -1,7 +1,13 @@
 import { mkdir, rename, rm } from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { formatDate, getAllTags, getPostBySlug, getPublishedCraftItems, getPublishedPosts } from "@/lib/content";
+import {
+  formatDate,
+  getAllTags,
+  getPostBySlug,
+  getPublishedCraftItems,
+  getPublishedPosts,
+} from "@/lib/content";
 
 describe("content queries", () => {
   afterEach(() => {
@@ -21,7 +27,9 @@ describe("content queries", () => {
 
   it("does not resolve draft or private posts by slug outside development", async () => {
     await expect(getPostBySlug("test-example")).resolves.toBeUndefined();
-    await expect(getPostBySlug("private-draft-example")).resolves.toBeUndefined();
+    await expect(
+      getPostBySlug("private-draft-example"),
+    ).resolves.toBeUndefined();
   });
 
   it("includes draft and private posts while running in development", async () => {
@@ -58,7 +66,11 @@ describe("content queries", () => {
 
   it("returns no craft items when the craft content directory is missing", async () => {
     const craftDirectory = path.join(process.cwd(), "content", "craft");
-    const backupDirectory = path.join(process.cwd(), "content", ".craft-test-backup");
+    const backupDirectory = path.join(
+      process.cwd(),
+      "content",
+      ".craft-test-backup",
+    );
 
     await rm(backupDirectory, { force: true, recursive: true });
     await rename(craftDirectory, backupDirectory).catch((error: unknown) => {

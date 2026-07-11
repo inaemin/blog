@@ -1,6 +1,9 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { extractMarkdownHeadings, MarkdownBody } from "@/components/post/MarkdownBody";
+import {
+  extractMarkdownHeadings,
+  MarkdownBody,
+} from "@/components/post/MarkdownBody";
 
 describe("MarkdownBody", () => {
   it("renders headings, paragraphs, image blocks, code blocks, and list blocks", () => {
@@ -11,10 +14,10 @@ describe("MarkdownBody", () => {
       "### 사용자 데이터 캐시",
       "> 캐시 정책은 팀의 약속입니다.",
       "#### 즉시 갱신이 필요한 경우",
-      "![데이터 성격에 따라 캐시 정책을 분리하는 흐름](/images/posts/cache-strategy-flow.png \"데이터 성격에 따라 캐시 정책을 분리하는 흐름\")",
-      "![작은 캐시 정책 메모](/images/posts/cache-policy-note.png \"작은 캐시 정책 메모\")",
-      "![피곤..](https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg \"피곤..\")",
-      "```ts\nconst cachePolicy = {\n  user: \"no-store\",\n};\n```",
+      '![데이터 성격에 따라 캐시 정책을 분리하는 흐름](/images/posts/cache-strategy-flow.png "데이터 성격에 따라 캐시 정책을 분리하는 흐름")',
+      '![작은 캐시 정책 메모](/images/posts/cache-policy-note.png "작은 캐시 정책 메모")',
+      '![피곤..](https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg "피곤..")',
+      '```ts\nconst cachePolicy = {\n  user: "no-store",\n};\n```',
       "- 공개 목록은 재검증 주기를 둡니다.",
       "- 개인화 데이터는 요청마다 새로 가져옵니다.",
     ].join("\n\n");
@@ -45,8 +48,8 @@ describe("MarkdownBody", () => {
     expect(html).toContain('width="1029"');
     expect(html).toContain('data-image-height="1164"');
     expect(html).toContain('data-image-width="1029"');
-    expect(html).toContain('max-width:1029px;width:100%');
-    expect(html).toContain('height:auto;width:100%');
+    expect(html).toContain("max-width:1029px;width:100%");
+    expect(html).toContain("height:auto;width:100%");
     expect(html).toContain("text-center text-xs");
     expect(html).toContain("<pre");
     expect(html).toContain("wrap-normal");
@@ -58,22 +61,30 @@ describe("MarkdownBody", () => {
     expect(html).toContain("no-store");
     expect(html).toContain("<ul");
     expect(html).toContain("<li>공개 목록은 재검증 주기를 둡니다.</li>");
-    expect(html).toContain("<li>개인화 데이터는 요청마다 새로 가져옵니다.</li>");
+    expect(html).toContain(
+      "<li>개인화 데이터는 요청마다 새로 가져옵니다.</li>",
+    );
   });
 
   it("extracts h1 through h4 headings for the article toc", () => {
-    const headings = extractMarkdownHeadings([
-      "# 본문 큰 제목",
-      "## 캐시 전략 한눈에 보기",
-      "### 사용자 데이터 캐시",
-      "#### 즉시 갱신이 필요한 경우",
-    ].join("\n\n"));
+    const headings = extractMarkdownHeadings(
+      [
+        "# 본문 큰 제목",
+        "## 캐시 전략 한눈에 보기",
+        "### 사용자 데이터 캐시",
+        "#### 즉시 갱신이 필요한 경우",
+      ].join("\n\n"),
+    );
 
     expect(headings).toEqual([
       { id: "본문-큰-제목", level: 1, text: "본문 큰 제목" },
       { id: "캐시-전략-한눈에-보기", level: 2, text: "캐시 전략 한눈에 보기" },
       { id: "사용자-데이터-캐시", level: 3, text: "사용자 데이터 캐시" },
-      { id: "즉시-갱신이-필요한-경우", level: 4, text: "즉시 갱신이 필요한 경우" },
+      {
+        id: "즉시-갱신이-필요한-경우",
+        level: 4,
+        text: "즉시 갱신이 필요한 경우",
+      },
     ]);
   });
 });

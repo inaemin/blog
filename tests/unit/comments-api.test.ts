@@ -25,7 +25,11 @@ describe("comments API", () => {
 
   it("does not return comments for a private post", async () => {
     vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
-    const response = await GET(createRequest("http://localhost/api/comments?postSlug=nextjs-app-router-cache-strategy"));
+    const response = await GET(
+      createRequest(
+        "http://localhost/api/comments?postSlug=nextjs-app-router-cache-strategy",
+      ),
+    );
     const payload = await response.json();
 
     expect(response.status).toBe(200);
@@ -34,7 +38,9 @@ describe("comments API", () => {
 
   it("does not return comments for draft or private posts", async () => {
     vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
-    const response = await GET(createRequest("http://localhost/api/comments?postSlug=test-example"));
+    const response = await GET(
+      createRequest("http://localhost/api/comments?postSlug=test-example"),
+    );
 
     await expect(response.json()).resolves.toEqual({ comments: [] });
     expect(response.status).toBe(200);
@@ -44,19 +50,23 @@ describe("comments API", () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
 
-    await expect(getPreviewCommentsByPostSlug("test-example")).resolves.toEqual([
-      expect.objectContaining({
-        body: "draft preview comment",
-        postSlug: "test-example",
-      }),
-    ]);
+    await expect(getPreviewCommentsByPostSlug("test-example")).resolves.toEqual(
+      [
+        expect.objectContaining({
+          body: "draft preview comment",
+          postSlug: "test-example",
+        }),
+      ],
+    );
   });
 
   it("returns private post comments for development previews", async () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
 
-    await expect(getPreviewCommentsByPostSlug("nextjs-app-router-cache-strategy")).resolves.toEqual(
+    await expect(
+      getPreviewCommentsByPostSlug("nextjs-app-router-cache-strategy"),
+    ).resolves.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           articleTitle: "Next.js App Router 캐시 전략 정리",
@@ -68,9 +78,16 @@ describe("comments API", () => {
   });
 
   it("rejects invalid comment submissions", async () => {
-    const response = await POST(createRequest("http://localhost/api/comments", { comment: "missing slug" }));
+    const response = await POST(
+      createRequest("http://localhost/api/comments", {
+        comment: "missing slug",
+      }),
+    );
 
-    await expect(response.json()).resolves.toMatchObject({ code: "INVALID_INPUT", ok: false });
+    await expect(response.json()).resolves.toMatchObject({
+      code: "INVALID_INPUT",
+      ok: false,
+    });
     expect(response.status).toBe(400);
   });
 
@@ -84,7 +101,10 @@ describe("comments API", () => {
       }),
     );
 
-    await expect(response.json()).resolves.toMatchObject({ code: "INVALID_INPUT", ok: false });
+    await expect(response.json()).resolves.toMatchObject({
+      code: "INVALID_INPUT",
+      ok: false,
+    });
     expect(response.status).toBe(400);
   });
 
@@ -97,7 +117,10 @@ describe("comments API", () => {
       }),
     );
 
-    await expect(response.json()).resolves.toEqual({ ok: true, status: "approved" });
+    await expect(response.json()).resolves.toEqual({
+      ok: true,
+      status: "approved",
+    });
     expect(response.status).toBe(201);
   });
 });
