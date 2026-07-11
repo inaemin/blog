@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { formatDate, type ContentStatus, type Post } from "@/lib/content";
 import { PostTag } from "./PostTag";
 
@@ -46,6 +47,22 @@ function renderStatusBadge(status: ContentStatus) {
   return <span className={getStatusBadgeClassName(status)}>{statusLabel}</span>;
 }
 
+function PostThumbnail({ post, href, fallbackLabel }: { post: Post; href: string; fallbackLabel: string }) {
+  if (!post.thumbnail) {
+    return (
+      <Link href={href} className="hidden h-20 w-[116px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-[88px] xl:w-32">
+        <span className="px-3.5 text-center xl:px-4">{fallbackLabel}</span>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={href} className="hidden h-20 w-[116px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-card text-xs font-medium text-brand md:flex xl:h-[88px] xl:w-32">
+      <Image src={post.thumbnail} alt={`${post.title} 썸네일`} width={128} height={88} className="size-full object-cover" />
+    </Link>
+  );
+}
+
 export function PostListItem({ post }: { post: Post }) {
   const primaryTag = post.tags[0] ?? "Blog";
   const postHref = `/posts/${post.slug}`;
@@ -70,9 +87,7 @@ export function PostListItem({ post }: { post: Post }) {
             {post.description}
           </Link>
         </div>
-        <Link href={postHref} className="hidden h-20 w-[116px] shrink-0 items-center justify-center rounded-[14px] bg-card p-3.5 text-xs font-medium text-brand md:flex xl:h-[88px] xl:w-32 xl:p-4">
-          {primaryTag}
-        </Link>
+        <PostThumbnail post={post} href={postHref} fallbackLabel={primaryTag} />
       </div>
     </article>
   );
