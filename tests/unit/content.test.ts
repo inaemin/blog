@@ -10,8 +10,9 @@ describe("content queries", () => {
     const posts = await getPublishedPosts();
     const slugs = posts.map((post) => post.slug);
 
+    expect(slugs).toEqual([]);
     expect(slugs).not.toContain("test-example");
-    expect(slugs).toContain("nextjs-app-router-cache-strategy");
+    expect(slugs).not.toContain("nextjs-app-router-cache-strategy");
     expect(slugs).not.toContain("private-draft-example");
   });
 
@@ -27,6 +28,9 @@ describe("content queries", () => {
     const slugs = posts.map((post) => post.slug);
 
     expect(slugs).toContain("test-example");
+    expect(slugs).toContain("nextjs-app-router-cache-strategy");
+    expect(slugs).toContain("performance-budget-product-decisions");
+    expect(slugs).toContain("react-server-components-practical-guide");
     expect(slugs).toContain("private-draft-example");
     await expect(getPostBySlug("test-example")).resolves.toMatchObject({
       slug: "test-example",
@@ -36,13 +40,15 @@ describe("content queries", () => {
       slug: "private-draft-example",
       status: "private",
     });
-    await expect(getAllTags()).resolves.toEqual(["Caching", "Frontend", "Next.js", "Performance", "React", "RSC"]);
+    await expect(getAllTags()).resolves.toEqual([]);
   });
 
   it("collects tags from published posts only", async () => {
     const tags = await getAllTags();
 
-    expect(tags).toEqual(["Caching", "Frontend", "Next.js", "Performance", "React", "RSC"]);
+    expect(tags).toEqual([]);
+    expect(tags).not.toContain("Caching");
+    expect(tags).not.toContain("Next.js");
     expect(tags).not.toContain("Draft");
     expect(tags).not.toContain("test");
   });
