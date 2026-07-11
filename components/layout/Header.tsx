@@ -83,7 +83,7 @@ function ReadingProgress({ isEnabled, progress }: { isEnabled: boolean; progress
   }
 
   return (
-    <div className="absolute inset-x-0 bottom-0 h-[3px] bg-border md:hidden" aria-hidden="true" data-reading-progress-track="true">
+    <div className="absolute inset-x-0 bottom-0 h-0.75 bg-border md:hidden" aria-hidden="true" data-reading-progress-track="true">
       <div
         className="h-full origin-left bg-brand transition-transform duration-100 ease-out motion-reduce:transition-none"
         data-reading-progress-bar="true"
@@ -142,7 +142,7 @@ export function Header() {
 
   return (
     <header className={getHeaderClassName(isVisible)} data-visible={isVisible} aria-hidden={!isVisible}>
-      <div className="flex h-full w-full max-w-[1200px] items-center justify-between px-5 md:px-10 xl:px-0">
+      <div className="flex h-full w-full max-w-300 items-center justify-between px-5 md:px-10 xl:px-0">
         <Link href="/" className="text-xl font-medium text-foreground">
           {siteConfig.name}
         </Link>
