@@ -87,10 +87,8 @@
 
 - [ ] 최근 30일 `/posts/[slug]` page views 기준으로 인기 글 산정
 - [ ] Vercel Web Analytics API에서 path별 page view 조회
-- [ ] 결과를 Supabase `popular_posts` table에 저장
 - [ ] `GET /api/popular-posts` 구현
-- [ ] 기본 scheduler는 Vercel Cron 하루 1회로 시작
-- [ ] 하루 2회 이상 집계가 필요해질 경우 GitHub Actions scheduled workflow로 batch job 이동
+- [ ] 초기에는 Route Handler에서 직접 조회하고, 필요 시 Supabase 캐시와 scheduler를 추가
 - [ ] 캐시가 없거나 API 실패 시 최신 `published` 글 fallback 사용
 
 ### 7단계: 배포와 운영 검증

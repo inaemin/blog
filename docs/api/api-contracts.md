@@ -138,7 +138,8 @@ Response:
 }
 ```
 
-초기에는 Supabase `popular_posts` table에서 조회한다.
+Vercel Web Analytics `visits/aggregate` API에서 최근 30일 `/posts/*` pageviews를 조회해 `score`로 사용한다.
+환경 변수가 없거나 Analytics API 조회가 실패하면 공개 글 목록 기반 fallback을 반환하며, 이때 `score`는 `0`이다.
 
 ## Error Code 기준
 

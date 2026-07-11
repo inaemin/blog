@@ -25,7 +25,7 @@ MDX 기반 게시글과 craft 콘텐츠의 route, frontmatter schema, 공개 상
 데이터 기준:
 
 - 최신 글: 환경별 노출 대상 MDX 글을 `publishedAt` 내림차순으로 정렬하고 최대 5개 표시
-- 인기 있는 글: Vercel Web Analytics 기반 캐시 데이터
+- 인기 있는 글: Vercel Web Analytics의 최근 30일 `/posts/*` pageviews 기반 정렬, 조회 실패 시 공개 글 fallback
 - 최신 댓글: Supabase의 `approved` 댓글 중 최신순
 
 ### `/posts`
@@ -111,16 +111,16 @@ RSS 구독용 feed.
 
 ```ts
 type PostFrontmatter = {
-  title: string
-  description: string
-  publishedAt?: string
-  updatedAt?: string
-  slug: string
-  tags: string[]
-  readingTime: string
-  status: 'draft' | 'published' | 'private'
-  thumbnail?: string
-}
+  title: string;
+  description: string;
+  publishedAt?: string;
+  updatedAt?: string;
+  slug: string;
+  tags: string[];
+  readingTime: string;
+  status: "draft" | "published" | "private";
+  thumbnail?: string;
+};
 ```
 
 `status` 의미:
@@ -173,15 +173,15 @@ Craft content schema:
 
 ```ts
 type CraftFrontmatter = {
-  title: string
-  description: string
-  publishedAt?: string
-  slug: string
-  status: 'draft' | 'published' | 'private'
-  tags?: string[]
-  thumbnail?: string
-  externalUrl?: string
-}
+  title: string;
+  description: string;
+  publishedAt?: string;
+  slug: string;
+  status: "draft" | "published" | "private";
+  tags?: string[];
+  thumbnail?: string;
+  externalUrl?: string;
+};
 ```
 
 Craft도 post와 같은 status 규칙을 사용한다.
