@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9fafb;
+  --foreground: #191f28;
+  --surface: #ffffff;
+  --card: #f2f4f6;
+  --text-strong: #333d4b;
+  --text-secondary: #4e5968;
+  --text-muted: #5f6b7a;
+  --text-disabled: #8b95a1;
+  --brand: #1b64da;
+  --border: #e5e8eb;
+  --rail: #d1d6db;
+  --tag-bg: #ebf3ff;
+  --tag-border: #bfd9ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-text-strong: var(--text-strong);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-brand: var(--brand);
+  --color-border: var(--border);
+  --color-rail: var(--rail);
+  --color-tag-bg: var(--tag-bg);
+  --color-tag-border: var(--tag-border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), "Noto Sans KR", Pretendard, Inter, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--tag-bg);
+  color: var(--brand);
+}
