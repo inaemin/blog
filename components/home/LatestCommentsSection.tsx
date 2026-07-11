@@ -12,7 +12,7 @@ export async function LatestCommentsSection() {
 
   return (
     <section className="flex flex-col gap-2.5 rounded-[18px] bg-card p-3.5 xl:p-4" aria-labelledby="latest-comments-title">
-      <h2 id="latest-comments-title" className="text-sm font-medium leading-[1.25] text-foreground">
+      <h2 id="latest-comments-title" className="text-sm font-medium leading-tight text-foreground">
         최신 댓글
       </h2>
       <div className="space-y-2.5">

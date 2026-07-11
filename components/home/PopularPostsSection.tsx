@@ -6,8 +6,8 @@ export async function PopularPostsSection() {
   const hasPosts = posts.length > 0;
 
   return (
-    <section className="flex flex-col gap-3 rounded-[18px] bg-card p-4 md:p-[18px]" aria-labelledby="popular-posts-title">
-      <h2 id="popular-posts-title" className="text-sm font-medium leading-[1.25] text-foreground">
+    <section className="flex flex-col gap-3 rounded-[18px] bg-card p-4 md:p-4.5" aria-labelledby="popular-posts-title">
+      <h2 id="popular-posts-title" className="text-sm font-medium leading-tight text-foreground">
         인기 있는 글
       </h2>
       <div className="space-y-3">
