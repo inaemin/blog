@@ -33,7 +33,7 @@ export default async function TagPage({ params }: TagPageProps) {
 
   return (
     <PageShell>
-      <section className="flex max-w-[865px] flex-col gap-[18px] md:gap-5 xl:gap-[22px]">
+      <section className="flex max-w-216.25 flex-col gap-4.5 md:gap-5 xl:gap-5.5">
         <div className="flex flex-col gap-1.5">
           <h1 className="text-base font-medium leading-[1.18] md:text-lg xl:text-xl">{decodedTag}</h1>
           <p className="text-sm text-text-muted">{posts.length}개의 글이 있습니다.</p>

@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <PageShell>
       <div className="grid gap-6 xl:grid-cols-[865px_295px] xl:gap-10">
-        <section className="flex flex-col gap-[18px] md:gap-5 xl:gap-[22px]" aria-labelledby="latest-posts-title">
+        <section className="flex flex-col gap-4.5 md:gap-5 xl:gap-5.5" aria-labelledby="latest-posts-title">
           <div className="flex items-center justify-between">
             <h1 id="latest-posts-title" className="text-base font-medium leading-[1.18] md:text-lg xl:text-xl">
               최신 글
