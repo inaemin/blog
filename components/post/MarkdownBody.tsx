@@ -139,7 +139,7 @@ function renderHighlightedCode(code: string, language: string) {
   }
 
   return code.split("\n").flatMap((line, lineIndex) => [
-    <span key={`line-${lineIndex}`} className="block min-h-[22px]">
+    <span key={`line-${lineIndex}`} className="block min-h-5.5">
       {renderHighlightedLine(line, lineIndex)}
     </span>,
   ]);
@@ -188,7 +188,7 @@ function renderImageContent({ alt, dimensions, source }: ImageContentProps) {
   }
 
   return (
-    <div className="relative flex w-full min-h-[210px] items-center justify-center overflow-hidden rounded-[14px] md:min-h-[280px] xl:min-h-[300px]">
+    <div className="relative flex w-full min-h-52.5 items-center justify-center overflow-hidden rounded-[14px] md:min-h-70 xl:min-h-75">
       <Image src={source} alt={alt} fill sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)" className="object-contain" />
     </div>
   );
@@ -207,7 +207,7 @@ function renderCodeBlock(block: string) {
 
   return (
     <figure key={block} className="min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-[0_12px_28px_#0F172A0D]">
-      <pre className="max-w-full overflow-x-auto p-4 font-mono text-sm font-normal leading-[22px] text-text-strong [overflow-wrap:normal]">
+      <pre className="max-w-full overflow-x-auto p-4 font-mono text-sm font-normal leading-5.5 text-text-strong wrap-normal">
         <code className={`language-${language}`} data-language={language}>{renderHighlightedCode(trimmedCode, language)}</code>
       </pre>
     </figure>
@@ -243,7 +243,7 @@ function renderQuoteBlock(block: string) {
   const quote = block.split("\n").map((line) => line.replace(/^>\s?/u, "")).join("\n");
 
   return (
-    <blockquote key={block} className="border-l-2 border-brand py-1 pl-4 text-[15px] font-medium italic leading-[25px] text-text-secondary md:pl-5 xl:text-base xl:leading-[28px]">
+    <blockquote key={block} className="border-l-2 border-brand py-1 pl-4 text-[15px] font-medium italic leading-6.25 text-text-secondary md:pl-5 xl:text-base xl:leading-7">
       <p>{renderInlineText(quote)}</p>
     </blockquote>
   );
@@ -253,7 +253,7 @@ export function MarkdownBody({ body }: { body: string }) {
   const blocks = splitBlocks(body);
 
   return (
-    <div className={`flex ${markdownTextWrapClassName} flex-col gap-5 text-base font-normal leading-[27px] text-text-strong md:gap-[22px] xl:gap-6 xl:text-[17px] xl:leading-[29px]`}>
+    <div className={`flex ${markdownTextWrapClassName} flex-col gap-5 text-base font-normal leading-6.75 text-text-strong md:gap-5.5 xl:gap-6 xl:text-[17px] xl:leading-7.25`}>
       {blocks.map((block) => {
         const codeBlock = renderCodeBlock(block);
 
@@ -281,17 +281,17 @@ export function MarkdownBody({ body }: { body: string }) {
         if (block.startsWith("## ")) {
           const text = block.slice(3);
 
-          return <h2 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-[22px] font-semibold leading-8 text-foreground xl:text-2xl xl:leading-[35px]">{text}</h2>;
+          return <h2 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-[22px] font-semibold leading-8 text-foreground xl:text-2xl xl:leading-8.75">{text}</h2>;
         }
         if (block.startsWith("### ")) {
           const text = block.slice(4);
 
-          return <h3 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-lg font-medium leading-[26px] text-foreground xl:text-xl xl:font-semibold xl:leading-[29px]">{text}</h3>;
+          return <h3 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-lg font-medium leading-6.5 text-foreground xl:text-xl xl:font-semibold xl:leading-7.25">{text}</h3>;
         }
         if (block.startsWith("#### ")) {
           const text = block.slice(5);
 
-          return <h4 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-base font-medium leading-[23px] text-text-strong xl:text-[17px] xl:font-semibold xl:leading-[25px]">{text}</h4>;
+          return <h4 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-base font-medium leading-5.75 text-text-strong xl:text-[17px] xl:font-semibold xl:leading-6.25">{text}</h4>;
         }
         if (block.startsWith("- ")) {
           return (

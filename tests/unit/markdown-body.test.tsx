@@ -49,7 +49,7 @@ describe("MarkdownBody", () => {
     expect(html).toContain('height:auto;width:100%');
     expect(html).toContain("text-center text-xs");
     expect(html).toContain("<pre");
-    expect(html).toContain("[overflow-wrap:normal]");
+    expect(html).toContain("wrap-normal");
     expect(html).not.toContain("TS</figcaption>");
     expect(html).toContain('class="language-ts"');
     expect(html).toContain('data-language="ts"');
