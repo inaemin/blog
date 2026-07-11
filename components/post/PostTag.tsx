@@ -9,10 +9,16 @@ function getTagHref(tag: string) {
 }
 
 export function PostTag({ children }: PostTagProps) {
-  const className = "rounded-full bg-tag-bg px-2 py-1 text-xs font-medium text-brand md:text-[13px] xl:text-sm";
+  const className =
+    "rounded-full bg-tag-bg px-2 py-1 text-xs font-medium text-brand md:text-[13px] xl:text-sm";
 
   return (
-    <Link href={getTagHref(children)} className={className} data-post-tag="true" aria-label={`${children} 태그 글 보기`}>
+    <Link
+      href={getTagHref(children)}
+      className={className}
+      data-post-tag="true"
+      aria-label={`${children} 태그 글 보기`}
+    >
       {children}
     </Link>
   );

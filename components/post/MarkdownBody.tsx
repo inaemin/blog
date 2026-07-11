@@ -32,7 +32,8 @@ const keywordTokens = new Set([
   "undefined",
   "var",
 ]);
-const codeTokenPattern = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b[a-zA-Z_$][\w$]*\b|\b\d+(?:\.\d+)?\b|[{}()[\].,:;=<>+\-*/])/gu;
+const codeTokenPattern =
+  /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b[a-zA-Z_$][\w$]*\b|\b\d+(?:\.\d+)?\b|[{}()[\].,:;=<>+\-*/])/gu;
 
 type ImageMetadata = {
   caption?: string;
@@ -50,7 +51,10 @@ type ImageContentProps = {
 };
 
 const markdownImageDimensions: Readonly<Record<string, ImageDimensions>> = {
-  "https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg": { height: 1164, width: 1029 },
+  "https://pbs.twimg.com/media/Ft-tVAqaUAAoXg4.jpg": {
+    height: 1164,
+    width: 1029,
+  },
 };
 
 function getHeadingId(text: string) {
@@ -68,15 +72,16 @@ function getHeadingId(text: string) {
 }
 
 function splitBlocks(body: string) {
-  return body
-    .split(/(```[\s\S]*?```)/u)
-    .flatMap((segment) => {
-      if (segment.startsWith("```")) {
-        return [segment.trim()];
-      }
+  return body.split(/(```[\s\S]*?```)/u).flatMap((segment) => {
+    if (segment.startsWith("```")) {
+      return [segment.trim()];
+    }
 
-      return segment.split(/\n{2,}/u).map((block) => block.trim()).filter(Boolean);
-    });
+    return segment
+      .split(/\n{2,}/u)
+      .map((block) => block.trim())
+      .filter(Boolean);
+  });
 }
 
 export function extractMarkdownHeadings(body: string): MarkdownHeading[] {
@@ -89,7 +94,9 @@ export function extractMarkdownHeadings(body: string): MarkdownHeading[] {
 
     const [, marker, text] = match;
 
-    return [{ id: getHeadingId(text), level: marker.length as 1 | 2 | 3 | 4, text }];
+    return [
+      { id: getHeadingId(text), level: marker.length as 1 | 2 | 3 | 4, text },
+    ];
   });
 }
 
@@ -98,7 +105,14 @@ function renderInlineText(text: string) {
     if (segment.startsWith("`") && segment.endsWith("`")) {
       const code = segment.slice(1, -1);
 
-      return <code key={segment} className="rounded bg-card px-1.5 py-0.5 font-mono text-[0.9em] text-text-strong">{code}</code>;
+      return (
+        <code
+          key={segment}
+          className="rounded bg-card px-1.5 py-0.5 font-mono text-[0.9em] text-text-strong"
+        >
+          {code}
+        </code>
+      );
     }
 
     return segment;
@@ -126,11 +140,18 @@ function getCodeTokenClassName(token: string) {
 }
 
 function renderHighlightedLine(line: string, lineIndex: number) {
-  return line.split(codeTokenPattern).filter(Boolean).map((segment, segmentIndex) => {
-    const className = getCodeTokenClassName(segment);
+  return line
+    .split(codeTokenPattern)
+    .filter(Boolean)
+    .map((segment, segmentIndex) => {
+      const className = getCodeTokenClassName(segment);
 
-    return <span key={`${lineIndex}-${segmentIndex}`} className={className}>{segment}</span>;
-  });
+      return (
+        <span key={`${lineIndex}-${segmentIndex}`} className={className}>
+          {segment}
+        </span>
+      );
+    });
 }
 
 function renderHighlightedCode(code: string, language: string) {
@@ -160,7 +181,9 @@ function getMarkdownImageDimensions(source: string) {
   return markdownImageDimensions[source];
 }
 
-function getImageContentStyle(dimensions: ImageDimensions | undefined): CSSProperties | undefined {
+function getImageContentStyle(
+  dimensions: ImageDimensions | undefined,
+): CSSProperties | undefined {
   if (!dimensions) {
     return undefined;
   }
@@ -168,12 +191,18 @@ function getImageContentStyle(dimensions: ImageDimensions | undefined): CSSPrope
   return { maxWidth: dimensions.width, width: "100%" };
 }
 
-const responsiveImageStyle = { height: "auto", width: "100%" } satisfies CSSProperties;
+const responsiveImageStyle = {
+  height: "auto",
+  width: "100%",
+} satisfies CSSProperties;
 
 function renderImageContent({ alt, dimensions, source }: ImageContentProps) {
   if (dimensions) {
     return (
-      <div className="overflow-hidden rounded-[14px]" style={getImageContentStyle(dimensions)}>
+      <div
+        className="overflow-hidden rounded-[14px]"
+        style={getImageContentStyle(dimensions)}
+      >
         <Image
           src={source}
           alt={alt}
@@ -188,8 +217,14 @@ function renderImageContent({ alt, dimensions, source }: ImageContentProps) {
   }
 
   return (
-    <div className="relative flex w-full min-h-52.5 items-center justify-center overflow-hidden rounded-[14px] md:min-h-70 xl:min-h-75">
-      <Image src={source} alt={alt} fill sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)" className="object-contain" />
+    <div className="relative flex min-h-52.5 w-full items-center justify-center overflow-hidden rounded-[14px] md:min-h-70 xl:min-h-75">
+      <Image
+        src={source}
+        alt={alt}
+        fill
+        sizes="(min-width: 1280px) 720px, (min-width: 768px) 640px, calc(100vw - 40px)"
+        className="object-contain"
+      />
     </div>
   );
 }
@@ -206,9 +241,14 @@ function renderCodeBlock(block: string) {
   const trimmedCode = code.trim();
 
   return (
-    <figure key={block} className="min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-[0_12px_28px_#0F172A0D]">
-      <pre className="max-w-full overflow-x-auto p-4 font-mono text-sm font-normal leading-5.5 text-text-strong wrap-normal">
-        <code className={`language-${language}`} data-language={language}>{renderHighlightedCode(trimmedCode, language)}</code>
+    <figure
+      key={block}
+      className="min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-[0_12px_28px_#0F172A0D]"
+    >
+      <pre className="max-w-full overflow-x-auto p-4 font-mono text-sm leading-5.5 font-normal wrap-normal text-text-strong">
+        <code className={`language-${language}`} data-language={language}>
+          {renderHighlightedCode(trimmedCode, language)}
+        </code>
       </pre>
     </figure>
   );
@@ -226,9 +266,17 @@ function renderImageBlock(block: string) {
   const dimensions = getMarkdownImageDimensions(source);
 
   return (
-    <figure key={block} className="flex min-w-0 flex-col items-center gap-2" data-image-height={dimensions?.height} data-image-width={dimensions?.width}>
+    <figure
+      key={block}
+      className="flex min-w-0 flex-col items-center gap-2"
+      data-image-height={dimensions?.height}
+      data-image-width={dimensions?.width}
+    >
       {renderImageContent({ alt, dimensions, source })}
-      <figcaption className="w-full text-center text-xs leading-[1.35] text-text-muted" style={getImageContentStyle(dimensions)}>
+      <figcaption
+        className="w-full text-center text-xs leading-[1.35] text-text-muted"
+        style={getImageContentStyle(dimensions)}
+      >
         {caption ?? source}
       </figcaption>
     </figure>
@@ -240,10 +288,16 @@ function renderQuoteBlock(block: string) {
     return undefined;
   }
 
-  const quote = block.split("\n").map((line) => line.replace(/^>\s?/u, "")).join("\n");
+  const quote = block
+    .split("\n")
+    .map((line) => line.replace(/^>\s?/u, ""))
+    .join("\n");
 
   return (
-    <blockquote key={block} className="border-l-2 border-brand py-1 pl-4 text-[15px] font-medium italic leading-6.25 text-text-secondary md:pl-5 xl:text-base xl:leading-7">
+    <blockquote
+      key={block}
+      className="border-l-2 border-brand py-1 pl-4 text-[15px] leading-6.25 font-medium text-text-secondary italic md:pl-5 xl:text-base xl:leading-7"
+    >
       <p>{renderInlineText(quote)}</p>
     </blockquote>
   );
@@ -253,7 +307,9 @@ export function MarkdownBody({ body }: { body: string }) {
   const blocks = splitBlocks(body);
 
   return (
-    <div className={`flex ${markdownTextWrapClassName} flex-col gap-5 text-base font-normal leading-6.75 text-text-strong md:gap-5.5 xl:gap-6 xl:text-[17px] xl:leading-7.25`}>
+    <div
+      className={`flex ${markdownTextWrapClassName} flex-col gap-5 text-base leading-6.75 font-normal text-text-strong md:gap-5.5 xl:gap-6 xl:text-[17px] xl:leading-7.25`}
+    >
       {blocks.map((block) => {
         const codeBlock = renderCodeBlock(block);
 
@@ -276,22 +332,58 @@ export function MarkdownBody({ body }: { body: string }) {
         if (block.startsWith("# ")) {
           const text = block.slice(2);
 
-          return <h1 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-[26px] font-bold leading-8 text-foreground xl:text-[28px] xl:leading-9">{text}</h1>;
+          return (
+            <h1
+              key={block}
+              id={getHeadingId(text)}
+              style={headingAnchorStyle}
+              className="text-[26px] leading-8 font-bold text-foreground xl:text-[28px] xl:leading-9"
+            >
+              {text}
+            </h1>
+          );
         }
         if (block.startsWith("## ")) {
           const text = block.slice(3);
 
-          return <h2 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-[22px] font-semibold leading-8 text-foreground xl:text-2xl xl:leading-8.75">{text}</h2>;
+          return (
+            <h2
+              key={block}
+              id={getHeadingId(text)}
+              style={headingAnchorStyle}
+              className="text-[22px] leading-8 font-semibold text-foreground xl:text-2xl xl:leading-8.75"
+            >
+              {text}
+            </h2>
+          );
         }
         if (block.startsWith("### ")) {
           const text = block.slice(4);
 
-          return <h3 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-lg font-medium leading-6.5 text-foreground xl:text-xl xl:font-semibold xl:leading-7.25">{text}</h3>;
+          return (
+            <h3
+              key={block}
+              id={getHeadingId(text)}
+              style={headingAnchorStyle}
+              className="text-lg leading-6.5 font-medium text-foreground xl:text-xl xl:leading-7.25 xl:font-semibold"
+            >
+              {text}
+            </h3>
+          );
         }
         if (block.startsWith("#### ")) {
           const text = block.slice(5);
 
-          return <h4 key={block} id={getHeadingId(text)} style={headingAnchorStyle} className="text-base font-medium leading-5.75 text-text-strong xl:text-[17px] xl:font-semibold xl:leading-6.25">{text}</h4>;
+          return (
+            <h4
+              key={block}
+              id={getHeadingId(text)}
+              style={headingAnchorStyle}
+              className="text-base leading-5.75 font-medium text-text-strong xl:text-[17px] xl:leading-6.25 xl:font-semibold"
+            >
+              {text}
+            </h4>
+          );
         }
         if (block.startsWith("- ")) {
           return (

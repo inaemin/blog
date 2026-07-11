@@ -1,7 +1,14 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import type { MarkdownHeading } from "./MarkdownBody";
 
 type ArticleTocProps = {
@@ -17,29 +24,56 @@ type DesktopTocRowMetrics = {
 };
 
 function getDesktopTocRowMetrics(rowHeights: number[]): DesktopTocRowMetrics {
-  const offsets = rowHeights.map((_, index) => rowHeights.slice(0, index).reduce((sum, rowHeight) => sum + rowHeight, 0) + index * desktopTocRowGap);
-  const railHeight = rowHeights.reduce((sum, rowHeight) => sum + rowHeight, 0) + Math.max(0, rowHeights.length - 1) * desktopTocRowGap;
+  const offsets = rowHeights.map(
+    (_, index) =>
+      rowHeights
+        .slice(0, index)
+        .reduce((sum, rowHeight) => sum + rowHeight, 0) +
+      index * desktopTocRowGap,
+  );
+  const railHeight =
+    rowHeights.reduce((sum, rowHeight) => sum + rowHeight, 0) +
+    Math.max(0, rowHeights.length - 1) * desktopTocRowGap;
 
   return { offsets, railHeight, rowHeights };
 }
 
 function getDefaultDesktopTocRowMetrics(headingCount: number) {
-  return getDesktopTocRowMetrics(Array.from({ length: headingCount }, () => desktopTocRowHeight));
+  return getDesktopTocRowMetrics(
+    Array.from({ length: headingCount }, () => desktopTocRowHeight),
+  );
 }
 
-function getMeasuredDesktopTocRowHeight(element: HTMLAnchorElement | undefined) {
+function getMeasuredDesktopTocRowHeight(
+  element: HTMLAnchorElement | undefined,
+) {
   if (!element) {
     return desktopTocRowHeight;
   }
 
-  return Math.max(desktopTocRowHeight, Math.ceil(element.getBoundingClientRect().height));
+  return Math.max(
+    desktopTocRowHeight,
+    Math.ceil(element.getBoundingClientRect().height),
+  );
 }
 
-function areDesktopTocRowMetricsEqual(currentMetrics: DesktopTocRowMetrics, nextMetrics: DesktopTocRowMetrics) {
-  return currentMetrics.railHeight === nextMetrics.railHeight && currentMetrics.rowHeights.length === nextMetrics.rowHeights.length && currentMetrics.rowHeights.every((rowHeight, index) => rowHeight === nextMetrics.rowHeights[index]);
+function areDesktopTocRowMetricsEqual(
+  currentMetrics: DesktopTocRowMetrics,
+  nextMetrics: DesktopTocRowMetrics,
+) {
+  return (
+    currentMetrics.railHeight === nextMetrics.railHeight &&
+    currentMetrics.rowHeights.length === nextMetrics.rowHeights.length &&
+    currentMetrics.rowHeights.every(
+      (rowHeight, index) => rowHeight === nextMetrics.rowHeights[index],
+    )
+  );
 }
 
-function getDesktopTocItemElements(headings: MarkdownHeading[], itemElements: Map<string, HTMLAnchorElement>) {
+function getDesktopTocItemElements(
+  headings: MarkdownHeading[],
+  itemElements: Map<string, HTMLAnchorElement>,
+) {
   return headings.flatMap((heading) => {
     const element = itemElements.get(heading.id);
 
@@ -79,7 +113,11 @@ type TocItemClassNameInput = {
   variant: TocVariant;
 };
 
-function getTocItemClassName({ activeHeadingId, heading, variant }: TocItemClassNameInput) {
+function getTocItemClassName({
+  activeHeadingId,
+  heading,
+  variant,
+}: TocItemClassNameInput) {
   const itemHeightClassName = getTocItemHeightClassName(variant);
   const baseClassName = `flex ${itemHeightClassName} items-center rounded-lg py-1 text-[13px] font-bold leading-[1.38] whitespace-normal [overflow-wrap:anywhere] transition-colors hover:text-brand`;
 
@@ -110,7 +148,10 @@ function getAriaCurrent(headingId: string, activeHeadingId: string) {
   return undefined;
 }
 
-function syncVisibleHeadingId(entry: IntersectionObserverEntry, visibleHeadingIds: Set<string>) {
+function syncVisibleHeadingId(
+  entry: IntersectionObserverEntry,
+  visibleHeadingIds: Set<string>,
+) {
   if (entry.isIntersecting) {
     visibleHeadingIds.add(entry.target.id);
     return;
@@ -120,7 +161,9 @@ function syncVisibleHeadingId(entry: IntersectionObserverEntry, visibleHeadingId
 }
 
 function getActiveHeadingIdFromScroll(headingElements: HTMLElement[]) {
-  const activeHeading = [...headingElements].reverse().find((element) => element.getBoundingClientRect().top <= 128);
+  const activeHeading = [...headingElements]
+    .reverse()
+    .find((element) => element.getBoundingClientRect().top <= 128);
 
   if (activeHeading) {
     return activeHeading.id;
@@ -142,7 +185,11 @@ function getServerSnapshot() {
 }
 
 function useIsMounted() {
-  return useSyncExternalStore(subscribeToClientMount, getClientSnapshot, getServerSnapshot);
+  return useSyncExternalStore(
+    subscribeToClientMount,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 }
 
 function getChevronPath(isOpen: boolean) {
@@ -163,8 +210,16 @@ function getChevronState(isOpen: boolean) {
 
 function TocChevronIcon({ isOpen }: { isOpen: boolean }) {
   return (
-    <span className="flex size-4 shrink-0 items-center justify-center text-text-secondary" data-state={getChevronState(isOpen)}>
-      <svg aria-hidden="true" className="size-2.5 fill-current" focusable="false" viewBox="0 0 640 640">
+    <span
+      className="flex size-4 shrink-0 items-center justify-center text-text-secondary"
+      data-state={getChevronState(isOpen)}
+    >
+      <svg
+        aria-hidden="true"
+        className="size-2.5 fill-current"
+        focusable="false"
+        viewBox="0 0 640 640"
+      >
         <path d={getChevronPath(isOpen)} />
       </svg>
     </span>
@@ -172,32 +227,43 @@ function TocChevronIcon({ isOpen }: { isOpen: boolean }) {
 }
 
 function useActiveHeadingId(headings: MarkdownHeading[]) {
-  const headingIds = useMemo(() => headings.map((heading) => heading.id), [headings]);
+  const headingIds = useMemo(
+    () => headings.map((heading) => heading.id),
+    [headings],
+  );
   const [activeHeadingId, setActiveHeadingId] = useState(headingIds[0] ?? "");
   const [activeHeadingIndex, setActiveHeadingIndex] = useState(0);
   const animationFrameId = useRef(0);
   const pendingHeadingId = useRef("");
   const pendingHeadingTimeoutId = useRef(0);
 
-  const setActiveHeadingById = useCallback((headingId: string) => {
-    const headingIndex = headingIds.indexOf(headingId);
+  const setActiveHeadingById = useCallback(
+    (headingId: string) => {
+      const headingIndex = headingIds.indexOf(headingId);
 
-    if (headingIndex < 0) {
-      return;
-    }
+      if (headingIndex < 0) {
+        return;
+      }
 
-    setActiveHeadingId(headingId);
-    setActiveHeadingIndex(headingIndex);
-  }, [headingIds]);
+      setActiveHeadingId(headingId);
+      setActiveHeadingIndex(headingIndex);
+    },
+    [headingIds],
+  );
 
-  const activateHeading = (headingId: string, event?: MouseEvent<HTMLAnchorElement>) => {
+  const activateHeading = (
+    headingId: string,
+    event?: MouseEvent<HTMLAnchorElement>,
+  ) => {
     pendingHeadingId.current = headingId;
     setActiveHeadingById(headingId);
 
     if (event) {
       event.preventDefault();
       window.history.pushState(null, "", `#${headingId}`);
-      document.getElementById(headingId)?.scrollIntoView({ behavior: "auto", block: "start" });
+      document
+        .getElementById(headingId)
+        ?.scrollIntoView({ behavior: "auto", block: "start" });
     }
 
     if (pendingHeadingTimeoutId.current !== 0) {
@@ -236,14 +302,18 @@ function useActiveHeadingId(headings: MarkdownHeading[]) {
           syncVisibleHeadingId(entry, visibleHeadingIds);
         }
 
-        const firstVisibleHeadingId = headingIds.find((headingId) => visibleHeadingIds.has(headingId));
+        const firstVisibleHeadingId = headingIds.find((headingId) =>
+          visibleHeadingIds.has(headingId),
+        );
 
         if (firstVisibleHeadingId) {
           setActiveHeadingById(firstVisibleHeadingId);
           return;
         }
 
-        const currentHeadingId = [...headingElements].reverse().find((element) => element.getBoundingClientRect().top <= 120)?.id;
+        const currentHeadingId = [...headingElements]
+          .reverse()
+          .find((element) => element.getBoundingClientRect().top <= 120)?.id;
 
         if (currentHeadingId) {
           setActiveHeadingById(currentHeadingId);
@@ -258,7 +328,8 @@ function useActiveHeadingId(headings: MarkdownHeading[]) {
         return;
       }
 
-      const activeHeadingIdFromScroll = getActiveHeadingIdFromScroll(headingElements);
+      const activeHeadingIdFromScroll =
+        getActiveHeadingIdFromScroll(headingElements);
 
       if (activeHeadingIdFromScroll.length > 0) {
         setActiveHeadingById(activeHeadingIdFromScroll);
@@ -270,13 +341,17 @@ function useActiveHeadingId(headings: MarkdownHeading[]) {
         return;
       }
 
-      animationFrameId.current = window.requestAnimationFrame(updateActiveHeadingFromScroll);
+      animationFrameId.current = window.requestAnimationFrame(
+        updateActiveHeadingFromScroll,
+      );
     };
 
     for (const element of headingElements) {
       observer.observe(element);
     }
-    window.addEventListener("scroll", scheduleActiveHeadingUpdate, { passive: true });
+    window.addEventListener("scroll", scheduleActiveHeadingUpdate, {
+      passive: true,
+    });
     window.addEventListener("resize", scheduleActiveHeadingUpdate);
     scheduleActiveHeadingUpdate();
 
@@ -306,12 +381,22 @@ function TocItems({
   variant,
 }: ArticleTocProps & {
   activeHeadingId: string;
-  onActivateHeading: (headingId: string, event?: MouseEvent<HTMLAnchorElement>) => void;
-  onItemElement?: (headingId: string, element: HTMLAnchorElement | null) => void;
+  onActivateHeading: (
+    headingId: string,
+    event?: MouseEvent<HTMLAnchorElement>,
+  ) => void;
+  onItemElement?: (
+    headingId: string,
+    element: HTMLAnchorElement | null,
+  ) => void;
   variant: TocVariant;
 }) {
   if (headings.length === 0) {
-    return <p className="text-sm leading-6 text-text-muted">아직 표시할 목차가 없어요.</p>;
+    return (
+      <p className="text-sm leading-6 text-text-muted">
+        아직 표시할 목차가 없어요.
+      </p>
+    );
   }
 
   return (
@@ -345,15 +430,20 @@ export function InlineArticleToc({ headings }: ArticleTocProps) {
   return (
     <details
       open={isTocOpen}
-      className="fixed right-8.25 top-24.5 z-10 hidden w-58.5 flex-col gap-2 md:flex xl:hidden"
+      className="fixed top-24.5 right-8.25 z-10 hidden w-58.5 flex-col gap-2 md:flex xl:hidden"
       onToggle={(event) => setIsTocOpen(event.currentTarget.open)}
     >
-      <summary className="flex h-11 cursor-pointer list-none items-center justify-between rounded-xl border border-border bg-surface px-3 text-[13px] font-bold leading-[1.35] text-foreground shadow-[0_2px_4px_#00000014]">
+      <summary className="flex h-11 cursor-pointer list-none items-center justify-between rounded-xl border border-border bg-surface px-3 text-[13px] leading-[1.35] font-bold text-foreground shadow-[0_2px_4px_#00000014]">
         목차
         <TocChevronIcon isOpen={isTocOpen} />
       </summary>
       <div className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-2 shadow-[0_8px_18px_#0F172A24]">
-        <TocItems headings={headings} activeHeadingId={activeHeadingId} onActivateHeading={activateHeading} variant="tablet" />
+        <TocItems
+          headings={headings}
+          activeHeadingId={activeHeadingId}
+          onActivateHeading={activateHeading}
+          variant="tablet"
+        />
       </div>
     </details>
   );
@@ -361,20 +451,27 @@ export function InlineArticleToc({ headings }: ArticleTocProps) {
 
 export function DesktopArticleToc({ headings }: ArticleTocProps) {
   const isMounted = useIsMounted();
-  const { activeHeadingId, activeHeadingIndex, activateHeading } = useActiveHeadingId(headings);
+  const { activeHeadingId, activeHeadingIndex, activateHeading } =
+    useActiveHeadingId(headings);
   const itemElements = useRef(new Map<string, HTMLAnchorElement>());
-  const [rowMetrics, setRowMetrics] = useState(() => getDefaultDesktopTocRowMetrics(headings.length));
+  const [rowMetrics, setRowMetrics] = useState(() =>
+    getDefaultDesktopTocRowMetrics(headings.length),
+  );
   const activeLineOffset = rowMetrics.offsets[activeHeadingIndex] ?? 0;
-  const activeLineHeight = rowMetrics.rowHeights[activeHeadingIndex] ?? desktopTocRowHeight;
+  const activeLineHeight =
+    rowMetrics.rowHeights[activeHeadingIndex] ?? desktopTocRowHeight;
 
-  const registerItemElement = useCallback((headingId: string, element: HTMLAnchorElement | null) => {
-    if (!element) {
-      itemElements.current.delete(headingId);
-      return;
-    }
+  const registerItemElement = useCallback(
+    (headingId: string, element: HTMLAnchorElement | null) => {
+      if (!element) {
+        itemElements.current.delete(headingId);
+        return;
+      }
 
-    itemElements.current.set(headingId, element);
-  }, []);
+      itemElements.current.set(headingId, element);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!isMounted) {
@@ -382,7 +479,9 @@ export function DesktopArticleToc({ headings }: ArticleTocProps) {
     }
 
     const syncRowMetrics = () => {
-      const rowHeights = headings.map((heading) => getMeasuredDesktopTocRowHeight(itemElements.current.get(heading.id)));
+      const rowHeights = headings.map((heading) =>
+        getMeasuredDesktopTocRowHeight(itemElements.current.get(heading.id)),
+      );
       const nextMetrics = getDesktopTocRowMetrics(rowHeights);
 
       setRowMetrics((currentMetrics) => {
@@ -396,7 +495,9 @@ export function DesktopArticleToc({ headings }: ArticleTocProps) {
     const resizeObserver = new ResizeObserver(syncRowMetrics);
 
     syncRowMetrics();
-    getDesktopTocItemElements(headings, itemElements.current).forEach((element) => resizeObserver.observe(element));
+    getDesktopTocItemElements(headings, itemElements.current).forEach(
+      (element) => resizeObserver.observe(element),
+    );
     window.addEventListener("resize", syncRowMetrics);
 
     return () => {
@@ -412,17 +513,35 @@ export function DesktopArticleToc({ headings }: ArticleTocProps) {
   return (
     <aside className="hidden xl:block">
       <div className="sticky top-24 flex w-73.75 flex-col gap-3 py-0">
-        <p className="text-base font-bold leading-[1.45] text-foreground">목차</p>
+        <p className="text-base leading-[1.45] font-bold text-foreground">
+          목차
+        </p>
         <div className="flex gap-3">
-          <div aria-hidden="true" className="relative w-1.5 shrink-0" style={{ height: rowMetrics.railHeight }}>
-            <div className="absolute left-0.5 w-0.5 rounded-full bg-rail" style={{ height: rowMetrics.railHeight }} />
+          <div
+            aria-hidden="true"
+            className="relative w-1.5 shrink-0"
+            style={{ height: rowMetrics.railHeight }}
+          >
+            <div
+              className="absolute left-0.5 w-0.5 rounded-full bg-rail"
+              style={{ height: rowMetrics.railHeight }}
+            />
             <div
               className="absolute left-0.5 w-0.5 rounded-full bg-brand transition-[height,transform] duration-200 ease-out motion-reduce:transition-none"
-              style={{ height: activeLineHeight, transform: `translateY(${activeLineOffset}px)` }}
+              style={{
+                height: activeLineHeight,
+                transform: `translateY(${activeLineOffset}px)`,
+              }}
             />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <TocItems headings={headings} activeHeadingId={activeHeadingId} onActivateHeading={activateHeading} onItemElement={registerItemElement} variant="desktop" />
+            <TocItems
+              headings={headings}
+              activeHeadingId={activeHeadingId}
+              onActivateHeading={activateHeading}
+              onItemElement={registerItemElement}
+              variant="desktop"
+            />
           </div>
         </div>
       </div>
