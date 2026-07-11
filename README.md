@@ -28,12 +28,25 @@ pnpm dev
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_your_server_only_key
+VERCEL_ACCESS_TOKEN=your_vercel_access_token
+VERCEL_PROJECT_ID=your_vercel_project_id
+VERCEL_TEAM_ID=your_vercel_team_id
 ```
 
 선택 기능:
 
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: 댓글 스팸 방지
 - `AI_API_KEY`: 댓글 AI 모더레이션
+- `VERCEL_ACCESS_TOKEN`, `VERCEL_PROJECT_ID`, `VERCEL_TEAM_ID`: Vercel Web Analytics 기반 인기 글 정렬
+- `VERCEL_TEAM_ID`: 팀 프로젝트가 아니면 생략 가능
+
+Vercel 값 확인 방법:
+
+- `VERCEL_ACCESS_TOKEN`: Vercel Dashboard → Account Settings → Tokens에서 생성
+- `VERCEL_PROJECT_ID`: `.vercel/repo.json`의 `projects[].id` 또는 Vercel 프로젝트 ID
+- `VERCEL_TEAM_ID`: `.vercel/repo.json`의 `projects[].orgId`; 개인 프로젝트면 생략 가능
+
+Vercel Analytics 환경 변수가 없거나 API 조회에 실패하면 `/api/popular-posts`는 공개 글 목록 기반 fallback을 반환합니다.
 
 ## Scripts
 
@@ -73,3 +86,13 @@ NEXT_PUBLIC_SITE_URL=https://your-blog.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_your_server_only_key
 ```
+
+Vercel Web Analytics 기반 인기 글 정렬까지 사용하려면 다음 값도 등록합니다.
+
+```bash
+VERCEL_ACCESS_TOKEN=your_vercel_access_token
+VERCEL_PROJECT_ID=your_vercel_project_id
+VERCEL_TEAM_ID=your_vercel_team_id
+```
+
+팀 프로젝트가 아니면 `VERCEL_TEAM_ID`는 생략할 수 있습니다.
