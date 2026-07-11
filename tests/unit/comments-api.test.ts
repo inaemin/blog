@@ -23,21 +23,13 @@ describe("comments API", () => {
     expect(response.status).toBe(400);
   });
 
-  it("returns comments for a published post", async () => {
+  it("does not return comments for a private post", async () => {
     vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
     const response = await GET(createRequest("http://localhost/api/comments?postSlug=nextjs-app-router-cache-strategy"));
     const payload = await response.json();
 
     expect(response.status).toBe(200);
-    expect(payload.comments).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          articleTitle: "Next.js App Router 캐시 전략 정리",
-          createdAt: expect.any(String),
-          postSlug: "nextjs-app-router-cache-strategy",
-        }),
-      ]),
-    );
+    expect(payload.comments).toEqual([]);
   });
 
   it("does not return comments for draft or private posts", async () => {
@@ -58,6 +50,21 @@ describe("comments API", () => {
         postSlug: "test-example",
       }),
     ]);
+  });
+
+  it("returns private post comments for development previews", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_your_server_only_key");
+
+    await expect(getPreviewCommentsByPostSlug("nextjs-app-router-cache-strategy")).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          articleTitle: "Next.js App Router 캐시 전략 정리",
+          createdAt: expect.any(String),
+          postSlug: "nextjs-app-router-cache-strategy",
+        }),
+      ]),
+    );
   });
 
   it("rejects invalid comment submissions", async () => {
