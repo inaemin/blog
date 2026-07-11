@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+changed_files=$(git diff --cached --name-only)
+
+if echo "$changed_files" | grep -Eq '^(app|components|lib|content|docs|design)/|^(eslint\.config\.mjs|next\.config\.ts|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|postcss\.config\.mjs|tsconfig\.json)$'; then
+  pnpm exec lint-staged || exit 1
+fi
+
+exit 0

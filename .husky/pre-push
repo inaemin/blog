@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if git rev-parse --verify "origin/$branch" >/dev/null 2>&1; then
+  changed_files=$(git diff "origin/$branch"..HEAD --name-only)
+else
+  changed_files=$(git diff "$(git merge-base HEAD main)"..HEAD --name-only)
+fi
+
+if echo "$changed_files" | grep -Eq '^(app|components|lib|content|docs|design)/|^(eslint\.config\.mjs|next\.config\.ts|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|postcss\.config\.mjs|tsconfig\.json)$'; then
+  pnpm check || exit 1
+fi
+
+exit 0
