@@ -101,7 +101,6 @@ Vercel Web Analytics API
 → 최근 30일 requestPath별 page view 조회
 → /posts/[slug] 경로만 필터링
 → page view 기준으로 인기 글 순위 계산
-→ Supabase `popular_posts` table에 저장
 → 홈/글 목록의 인기 글 섹션에 표시
 ```
 
@@ -117,16 +116,16 @@ popularScore = recentPageViews
 popularScore = recentPageViews + approvedCommentCount * 5
 ```
 
-완전 실시간 계산은 피한다. Vercel API token이 필요하고 API 호출 비용/한도도 고려해야 하므로, 주기적으로 계산해 캐싱한다.
+초기 구현은 `/api/popular-posts` Route Handler에서 Vercel Web Analytics API를 서버 사이드로 직접 조회한다. Vercel API token이 필요하므로 클라이언트에서는 직접 호출하지 않는다.
 
-스케줄러 전략:
+추후 캐싱 전략:
 
 ```txt
-기본값: Vercel Cron으로 하루 1회 집계
-확장 필요 시: GitHub Actions scheduled workflow로 하루 2회 이상 집계
+트래픽 증가 또는 API 한도 문제가 생기면 Vercel Cron 또는 GitHub Actions scheduled workflow에서 집계
+→ Supabase popular_posts 같은 캐시 저장소에 저장
 ```
 
-인기 글 집계는 Vercel에 종속된 runtime 기능이 아니라, Vercel Web Analytics API를 호출해 Supabase `popular_posts` table을 갱신하는 batch job으로 설계한다. 따라서 Vercel Cron 제한이 불편해지면 GitHub Actions로 옮겨도 블로그 런타임 구조는 크게 바뀌지 않는다.
+인기 글 API가 Analytics API 조회에 실패하거나 필요한 환경 변수가 없으면 공개 글 목록 기반 fallback을 반환한다.
 
 ## 댓글 시스템의 큰 흐름
 

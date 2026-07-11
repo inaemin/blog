@@ -23,13 +23,11 @@ flowchart TB
     StaticPages[정적 페이지\n홈 / 글 / 태그 / craft / RSS / sitemap]
     ApiComments[Route Handler\n/api/comments]
     ApiPopular[Route Handler\n/api/popular-posts]
-    CronPopular[Scheduler\nVercel Cron 또는 GitHub Actions\n인기 글 집계]
     WebAnalytics[Vercel Web Analytics]
   end
 
   subgraph Supabase[Supabase]
     CommentsTable[(comments table)]
-    PopularTable[(popular_posts table)]
   end
 
   Turnstile[Cloudflare Turnstile\nSiteverify]
@@ -46,11 +44,9 @@ flowchart TB
   ApiComments -->|댓글 분류| AI
 
   User -->|인기 글 조회| ApiPopular
-  ApiPopular --> PopularTable
+  ApiPopular -->|최근 30일 page view 조회| WebAnalytics
 
   User -->|page view 수집| WebAnalytics
-  CronPopular -->|최근 30일 page view 조회| WebAnalytics
-  CronPopular -->|인기 글 계산 결과 저장| PopularTable
 ```
 
 ## 정적 페이지 제공 흐름
@@ -149,20 +145,14 @@ deleted_at
 
 ```mermaid
 sequenceDiagram
-  participant J as Scheduler (Vercel Cron 또는 GitHub Actions)
   participant A as Vercel Web Analytics API
-  participant S as Supabase popular_posts
   participant P as /api/popular-posts
   participant U as 사용자
 
-  J->>A: 최근 30일 requestPath별 page view 조회
-  A-->>J: page view 집계 결과
-  J->>J: /posts/[slug]만 필터링 후 순위 계산
-  J->>S: 상위 인기 글 저장
-
   U->>P: GET /api/popular-posts
-  P->>S: 캐시된 인기 글 조회
-  S-->>P: 인기 글 목록
+  P->>A: 최근 30일 /posts/* page view 조회
+  A-->>P: requestPath별 page view 집계 결과
+  P->>P: published 글과 매칭 후 score/rank 계산
   P-->>U: 인기 글 응답
 ```
 
@@ -178,23 +168,14 @@ popularScore = recentPageViews
 popularScore = recentPageViews + approvedCommentCount * 5
 ```
 
-스케줄러 전략:
+추후 캐싱 전략:
 
 ```txt
-기본값: Vercel Cron 하루 1회
-필요 시: GitHub Actions scheduled workflow로 하루 2회 이상 실행
+트래픽 증가 또는 API 한도 문제가 생기면 Vercel Cron 하루 1회 집계
+필요 시 GitHub Actions scheduled workflow로 batch job 이동
 ```
 
-Vercel Hobby plan에서는 Cron이 하루 1회로 제한되므로, 하루 2회 이상 집계가 필요해질 가능성까지 대비하려면 GitHub Actions workflow를 같은 batch job의 대체 실행 환경으로 둔다.
-
-GitHub Actions를 사용할 때도 결과 저장 위치는 동일하다.
-
-```txt
-GitHub Actions
-→ Vercel Web Analytics API 조회
-→ 인기 글 계산
-→ Supabase popular_posts 갱신
-```
+현재 구현은 Supabase 캐시 테이블 없이 Route Handler에서 직접 조회한다. 환경 변수가 없거나 Analytics API 조회가 실패하면 published 글 목록 기반 fallback을 반환한다.
 
 ## 데이터 저장소
 
@@ -215,15 +196,6 @@ spam
 rejected
 ```
 
-### Supabase `popular_posts`
-
-역할:
-
-- Vercel Web Analytics API로 계산한 인기 글 결과 저장
-- 홈/글 목록의 인기 글 섹션에 빠르게 제공
-
-인기 글 결과는 Supabase table에 저장한다. 이렇게 하면 GitHub Actions나 Vercel Cron 중 어느 쪽에서 batch job을 실행해도 같은 저장소를 갱신할 수 있고, Supabase editor에서 값 확인과 수동 보정도 가능하다.
-
 ## 환경 변수
 
 서버 전용:
@@ -234,17 +206,17 @@ SUPABASE_SECRET_KEY
 AI_API_KEY
 VERCEL_ACCESS_TOKEN
 VERCEL_PROJECT_ID
-POPULAR_POSTS_REFRESH_SECRET
-ADMIN_SECRET
+VERCEL_TEAM_ID
 ```
 
-GitHub Actions를 스케줄러로 사용할 경우, 다음 값은 GitHub Repository Secrets에도 등록한다.
+GitHub Actions를 스케줄러로 추가할 경우, 다음 값은 GitHub Repository Secrets에도 등록한다.
 
 ```txt
 SUPABASE_SECRET_KEY
 NEXT_PUBLIC_SUPABASE_URL
 VERCEL_ACCESS_TOKEN
 VERCEL_PROJECT_ID
+VERCEL_TEAM_ID
 ```
 
 클라이언트 노출 가능:
@@ -261,7 +233,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 - `SUPABASE_SECRET_KEY`는 클라이언트에 노출하지 않는다.
 - `TURNSTILE_SECRET_KEY`는 클라이언트에 노출하지 않는다.
 - `AI_API_KEY`는 클라이언트에 노출하지 않는다.
-- `VERCEL_ACCESS_TOKEN`은 cron/serverless/build/GitHub Actions 작업에서만 사용한다.
+- `VERCEL_ACCESS_TOKEN`은 Route Handler, cron, build, GitHub Actions 같은 서버 쪽 작업에서만 사용한다.
+- `VERCEL_TEAM_ID`는 팀 프로젝트에서 Vercel Web Analytics API를 조회할 때 사용하며, 개인 프로젝트에서는 생략할 수 있다.
 
 ## 배포 구성
 
@@ -284,7 +257,6 @@ flowchart LR
 - Vercel 프로젝트 생성
 - Supabase 프로젝트 생성
 - Vercel Web Analytics 활성화
-- Vercel Cron 또는 GitHub Actions schedule 설정
 - Turnstile site/secret key 발급
 - AI moderation API key 설정
 - 환경 변수 등록
@@ -293,5 +265,6 @@ flowchart LR
 
 - 댓글 관리는 초기에는 Supabase table/editor에서 처리한다.
 - 별도 admin UI는 댓글이 많아진 뒤 만든다.
-- 인기 글은 실시간 계산하지 않고 cron으로 계산한 결과를 캐싱한다.
+- 인기 글은 초기에는 `/api/popular-posts`에서 Vercel Web Analytics API를 직접 조회한다.
+- 트래픽 증가 또는 API 한도 문제가 생기면 scheduler와 캐시 저장소를 추가한다.
 - 댓글 또는 인기 글 API가 실패해도 전체 페이지 렌더링은 깨지지 않아야 한다.
