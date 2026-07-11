@@ -2,8 +2,14 @@ import Link from "next/link";
 
 export function TagsSection({ tags }: { tags: string[] }) {
   return (
-    <section className="hidden flex-col gap-2.5 rounded-[18px] bg-card p-4.5 xl:flex" aria-labelledby="tags-title">
-      <h2 id="tags-title" className="text-sm font-medium leading-tight text-foreground">
+    <section
+      className="hidden flex-col gap-2.5 rounded-[18px] bg-card p-4.5 xl:flex"
+      aria-labelledby="tags-title"
+    >
+      <h2
+        id="tags-title"
+        className="text-sm leading-tight font-medium text-foreground"
+      >
         태그
       </h2>
       <div className="flex flex-wrap gap-2">
