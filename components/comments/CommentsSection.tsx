@@ -38,7 +38,7 @@ export function CommentsSection({ articleTitle, comments, postSlug }: CommentsSe
     <section className="flex flex-col gap-3" aria-labelledby="comments-title">
       <div className="flex items-center gap-1.5">
         <h2 id="comments-title" className="text-lg font-medium xl:text-xl">댓글</h2>
-        <span className="text-xs font-medium leading-[1.25] text-brand">{visibleComments.length}</span>
+        <span className="text-xs font-medium leading-tight text-brand">{visibleComments.length}</span>
       </div>
       <CommentComposer onOptimisticComment={addOptimisticComment} postSlug={postSlug} />
       <CommentList comments={visibleComments} />

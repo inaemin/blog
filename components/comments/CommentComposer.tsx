@@ -118,11 +118,11 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
   };
 
   return (
-    <form className="flex flex-col gap-2.5 rounded-lg border border-border bg-transparent p-3 md:p-4 xl:p-[18px]" onSubmit={submitComment}>
+    <form className="flex flex-col gap-2.5 rounded-lg border border-border bg-transparent p-3 md:p-4 xl:p-4.5" onSubmit={submitComment}>
       <input type="hidden" name="postSlug" value={postSlug} />
       <input type="text" name="honeypot" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
-      <div className="flex h-[38px] items-center gap-2.5">
-        <span className="flex size-[34px] shrink-0 items-center justify-center rounded-full bg-brand text-xs font-medium leading-[1.35] text-white">
+      <div className="flex h-9.5 items-center gap-2.5">
+        <span className="flex size-8.5 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-medium leading-[1.35] text-white">
           {nickname.slice(0, 1)}
         </span>
         <input
@@ -130,7 +130,7 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
           name="nickname"
           value={nickname}
           onChange={(event) => setNickname(event.target.value)}
-          className="h-[38px] min-w-0 flex-1 rounded-lg border border-border bg-transparent px-2 text-[13px] font-medium leading-[1.35] text-foreground outline-none focus:border-brand focus:ring-2 focus:ring-tag-border"
+          className="h-9.5 min-w-0 flex-1 rounded-lg border border-border bg-transparent px-2 text-[13px] font-medium leading-[1.35] text-foreground outline-none focus:border-brand focus:ring-2 focus:ring-tag-border"
         />
         <button type="button" className={`${buttonSizeClassName} border border-border bg-card text-text-secondary`} onClick={randomizeNickname}>
           랜덤 변경
@@ -144,9 +144,9 @@ export function CommentComposer({ onOptimisticComment, postSlug }: CommentCompos
           setSubmitState("idle");
         }}
         placeholder="댓글을 남겨보세요."
-        className="min-h-[58px] w-full resize-y rounded-lg border border-border bg-background px-3.5 py-3 text-[13px] leading-[1.35] text-foreground outline-none placeholder:text-text-muted focus:border-brand focus:ring-2 focus:ring-tag-border"
+        className="min-h-14.5 w-full resize-y rounded-lg border border-border bg-background px-3.5 py-3 text-[13px] leading-[1.35] text-foreground outline-none placeholder:text-text-muted focus:border-brand focus:ring-2 focus:ring-tag-border"
       />
-      <div className="flex min-h-[38px] flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex min-h-9.5 flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <p className={getSubmitMessageClassName()} aria-live="polite">
           {submitMessage}
         </p>
