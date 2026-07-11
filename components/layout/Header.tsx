@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { siteConfig } from "@/lib/site";
 import { MobileMenu } from "./MobileMenu";
 import { NavIcon } from "./NavIcon";
 
@@ -143,7 +144,7 @@ export function Header() {
     <header className={getHeaderClassName(isVisible)} data-visible={isVisible} aria-hidden={!isVisible}>
       <div className="flex h-full w-full max-w-[1200px] items-center justify-between px-5 md:px-10 xl:px-0">
         <Link href="/" className="text-xl font-medium text-foreground">
-          Annie Way
+          {siteConfig.name}
         </Link>
         <nav className="hidden items-center gap-7 md:flex" aria-label="주요 메뉴">
           {navItems.map((item) => {

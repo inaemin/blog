@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { siteConfig } from "@/lib/site";
 
 function Icon({ children }: { children: ReactNode }) {
   return (
@@ -16,7 +17,7 @@ export function Footer() {
     <footer id="page-footer" className="flex justify-center bg-card py-[34px] md:py-12">
       <div className="flex w-full max-w-[1200px] items-end justify-between px-5 text-text-muted md:px-10 xl:px-0">
         <div className="space-y-0.5 md:space-y-[3px] xl:space-y-0.5">
-          <p className="text-xs font-medium text-foreground md:text-[15px]">Annie Way</p>
+          <p className="text-xs font-medium text-foreground md:text-[15px]">{siteConfig.name}</p>
           <p className="text-[11px] md:text-xs">Inspired by toss.tech</p>
           <p className="text-[11px] md:text-xs">Built by inaemin · annie</p>
         </div>
