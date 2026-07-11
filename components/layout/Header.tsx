@@ -43,7 +43,8 @@ const mobileItems = navItems.map((item) => ({
 }));
 
 function getHeaderClassName(isVisible: boolean) {
-  const baseClassName = "sticky top-0 z-20 flex h-14 justify-center border-b border-border bg-background/95 backdrop-blur transition duration-200 md:h-16";
+  const baseClassName =
+    "sticky top-0 z-20 flex h-14 justify-center border-b border-border bg-background/95 backdrop-blur transition duration-200 md:h-16";
 
   if (isVisible) {
     return `${baseClassName} translate-y-0 opacity-100`;
@@ -77,13 +78,23 @@ function getArticleReadingProgress() {
   return Math.min(Math.max(rawProgress, 0), 1);
 }
 
-function ReadingProgress({ isEnabled, progress }: { isEnabled: boolean; progress: number }) {
+function ReadingProgress({
+  isEnabled,
+  progress,
+}: {
+  isEnabled: boolean;
+  progress: number;
+}) {
   if (!isEnabled) {
     return null;
   }
 
   return (
-    <div className="absolute inset-x-0 bottom-0 h-0.75 bg-border md:hidden" aria-hidden="true" data-reading-progress-track="true">
+    <div
+      className="absolute inset-x-0 bottom-0 h-0.75 bg-border md:hidden"
+      aria-hidden="true"
+      data-reading-progress-track="true"
+    >
       <div
         className="h-full origin-left bg-brand transition-transform duration-100 ease-out motion-reduce:transition-none"
         data-reading-progress-bar="true"
@@ -127,7 +138,9 @@ export function Header() {
     };
 
     updateVisibility();
-    window.addEventListener("scroll", scheduleVisibilityUpdate, { passive: true });
+    window.addEventListener("scroll", scheduleVisibilityUpdate, {
+      passive: true,
+    });
     window.addEventListener("resize", scheduleVisibilityUpdate);
 
     return () => {
@@ -141,17 +154,29 @@ export function Header() {
   }, [pathname]);
 
   return (
-    <header className={getHeaderClassName(isVisible)} data-visible={isVisible} aria-hidden={!isVisible}>
+    <header
+      className={getHeaderClassName(isVisible)}
+      data-visible={isVisible}
+      aria-hidden={!isVisible}
+    >
       <div className="flex h-full w-full max-w-300 items-center justify-between px-5 md:px-10 xl:px-0">
         <Link href="/" className="text-xl font-medium text-foreground">
           {siteConfig.name}
         </Link>
-        <nav className="hidden items-center gap-7 md:flex" aria-label="주요 메뉴">
+        <nav
+          className="hidden items-center gap-7 md:flex"
+          aria-label="주요 메뉴"
+        >
           {navItems.map((item) => {
             const isActive = isActiveNav(pathname, item.href);
 
             return (
-              <Link key={item.href} href={item.href} className={getNavClassName(isActive)} aria-current={getAriaCurrent(isActive)}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={getNavClassName(isActive)}
+                aria-current={getAriaCurrent(isActive)}
+              >
                 <NavIcon name={item.icon} size={16} />
                 <span>{item.label}</span>
               </Link>
@@ -160,7 +185,10 @@ export function Header() {
         </nav>
         <MobileMenu items={mobileItems} />
       </div>
-      <ReadingProgress isEnabled={hasReadingProgress} progress={readingProgress} />
+      <ReadingProgress
+        isEnabled={hasReadingProgress}
+        progress={readingProgress}
+      />
     </header>
   );
 }

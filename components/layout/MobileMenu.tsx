@@ -65,7 +65,7 @@ export function MobileMenu({ items }: MobileMenuProps) {
         <NavIcon name={getMenuIconName(isOpen)} size={18} />
       </button>
       {isOpen && (
-        <div className="absolute right-0 top-13 z-10 flex h-26.5 w-75 flex-col gap-0.5 rounded-2xl border border-border bg-surface p-2 shadow-[0_8px_24px_#00000014]">
+        <div className="absolute top-13 right-0 z-10 flex h-26.5 w-75 flex-col gap-0.5 rounded-2xl border border-border bg-surface p-2 shadow-[0_8px_24px_#00000014]">
           {items.map((item) => {
             const isActive = isActiveNav(pathname, item.href);
 
