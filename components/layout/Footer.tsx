@@ -28,12 +28,14 @@ export function Footer() {
       className="flex justify-center bg-card py-8.5 md:py-12"
     >
       <div className="flex w-full max-w-300 items-end justify-between px-5 text-text-muted md:px-10 xl:px-0">
-        <div className="space-y-0.5 md:space-y-0.75 xl:space-y-0.5">
+        <div className="flex flex-col gap-3">
           <p className="text-xs font-medium text-foreground md:text-[15px]">
             {siteConfig.name}
           </p>
-          <p className="text-[11px] md:text-xs">Inspired by toss.tech</p>
-          <p className="text-[11px] md:text-xs">Built by inaemin · annie</p>
+          <div className="flex flex-col gap-0.5">
+            <p className="text-[11px] md:text-xs">Inspired by toss.tech</p>
+            <p className="text-[11px] md:text-xs">Built by inaemin · annie</p>
+          </div>
         </div>
         <div className="flex items-center gap-3 md:gap-4 xl:gap-3">
           <a
